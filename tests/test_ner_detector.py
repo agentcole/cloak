@@ -1,7 +1,8 @@
-"""NER detection (spaCy backend). Skipped unless spaCy + the small English
-model are installed, so the core suite stays dependency-free."""
+"""NER detection (spaCy + GLiNER backends). Skipped unless the relevant
+optional model is installed, so the core suite stays dependency-free."""
 
 import importlib.util
+import os
 
 import pytest
 
@@ -42,3 +43,25 @@ def test_ner_and_regex_do_not_double_mask_overlap():
     c = _engine()
     res = c.mask_text("contact jane@acme.com")
     assert res.text == "contact [EMAIL_1]"
+
+
+# --- GLiNER backend (the packaged default) ---------------------------------
+# Opt-in: GLiNER downloads a model on first use, so this is gated behind an env
+# var to keep CI fast. Run locally with CLOAK_TEST_GLINER=1 once the model is
+# cached.
+_RUN_GLINER = bool(os.environ.get("CLOAK_TEST_GLINER")) and (
+    importlib.util.find_spec("gliner") is not None
+)
+
+
+@pytest.mark.skipif(not _RUN_GLINER, reason="set CLOAK_TEST_GLINER=1 with gliner installed")
+def test_default_gliner_backend_detects_and_roundtrips():
+    from cloak import Cloak, CloakPolicy
+
+    # Default policy: ner_backend='gliner', model 'urchade/gliner_multi_pii-v1'.
+    c = Cloak(CloakPolicy(detectors=["regex", "ner"]))
+    text = "Jane Doe emailed jane@acme.com from Berlin about the Acme Corp account."
+    res = c.mask_text(text)
+    assert res.by_type().get("PERSON")
+    assert "Jane Doe" not in res.text
+    assert c.unmask_text(res.text, res.vault) == text

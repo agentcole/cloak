@@ -14,9 +14,9 @@ Legend: ✅ done · 🚧 in progress · ⬜ planned · ❄️ deferred (out of c
 
 | ID | Gap | Status |
 |----|-----|:--:|
-| A1 | **GLiNER default backend never run** — `ner_backend="gliner"` is unvalidated; only the spaCy path was exercised. The default `[ner]` install may not work out of the box. | 🚧 |
-| A2 | **`[phone]` extra is dead** — `phonenumbers` is declared but never used; phone detection is pure regex (noisy, no validation/locale). | 🚧 |
-| A3 | **`mypy` never run; no `py.typed`** — types unchecked and not shipped to consumers. | 🚧 |
+| A1 | ~~GLiNER default backend never run~~ — **validated**: default `gliner` + `gliner_multi_pii-v1` detects PERSON/ORG/LOCATION end-to-end; opt-in test (`CLOAK_TEST_GLINER=1`). | ✅ |
+| A2 | ~~`[phone]` extra is dead~~ — **fixed**: dedicated `PhoneDetector` uses libphonenumber (validated, locale-aware, 0.95) with a regex fallback (0.6). | ✅ |
+| A3 | ~~`mypy` never run; no `py.typed`~~ — **fixed**: `py.typed` shipped; `mypy` clean on 25 files. | ✅ |
 | A4 | **LLM detector never run against a real model** — Tier-3 request/parse path is import-guarded only. | ⬜ |
 | A5 | **Thin detection coverage** — missing passports, driver's licenses, non-US national IDs, PHI/medical, postal addresses, dates-in-prose, handles, plates; no locale awareness. | ⬜ |
 | A6 | **Proxy hardening** — Anthropic response shapes, timeouts/retries, sync masking blocks the async loop, Faker not thread-safe under concurrency, vault has no TTL/eviction/persistence. | ⬜ |
