@@ -7,7 +7,12 @@ privacy-leaning default so ``CloakPolicy()`` is a safe starting point.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+import os
+from dataclasses import dataclass, field, fields
+from typing import Any
+
+# Fields that accept a set but are naturally written as a list in config files.
+_SET_FIELDS = {"enabled_types", "disabled_types", "roles"}
 
 # Replacement strategy names (see cloak.strategies).
 STRATEGY_PLACEHOLDER = "placeholder"
@@ -105,3 +110,103 @@ class CloakPolicy:
         if self.enabled_types is not None:
             return entity_type in self.enabled_types
         return True
+
+    # -- constructors -----------------------------------------------------
+
+    @classmethod
+    def from_profile(cls, name: str, **overrides: Any) -> CloakPolicy:
+        """Build a policy from a named compliance profile, with optional overrides."""
+        from .profiles import get_profile
+
+        return cls(**{**get_profile(name), **overrides})
+
+    @classmethod
+    def from_mapping(cls, data: dict[str, Any]) -> CloakPolicy:
+        """Build a policy from a plain dict (e.g. parsed JSON/TOML/YAML).
+
+        Supports a ``profile`` key to base the policy on a profile, with the
+        remaining keys applied as overrides. ``enabled_types`` etc. may be given
+        as lists. Unknown keys raise a clear error.
+        """
+        data = dict(data)
+        profile = data.pop("profile", None)
+
+        valid = {f.name for f in fields(cls)}
+        unknown = set(data) - valid
+        if unknown:
+            raise ValueError(
+                f"Unknown policy keys: {', '.join(sorted(unknown))}. "
+                f"Valid keys: {', '.join(sorted(valid))}"
+            )
+
+        for key in _SET_FIELDS:
+            if isinstance(data.get(key), list):
+                data[key] = set(data[key])
+
+        if profile is not None:
+            return cls.from_profile(profile, **data)
+        return cls(**data)
+
+    @classmethod
+    def from_file(cls, path: str) -> CloakPolicy:
+        """Load a policy from a JSON, TOML, or YAML file (by extension)."""
+        return cls.from_mapping(_load_mapping(path))
+
+    @classmethod
+    def from_env(cls, prefix: str = "CLOAK_") -> CloakPolicy:
+        """Build a policy from ``CLOAK_*`` environment variables.
+
+        Recognized: ``PROFILE``, ``DETECTORS`` (comma), ``STRATEGY``,
+        ``MIN_SCORE``, ``LOCALE``, ``PHONE_REGION``, ``SEED``,
+        ``ENABLED_TYPES`` (comma).
+        """
+        data: dict[str, Any] = {}
+        env = os.environ
+
+        def _get(name: str) -> str | None:
+            return env.get(prefix + name)
+
+        if (v := _get("PROFILE")) is not None:
+            data["profile"] = v
+        if (v := _get("DETECTORS")) is not None:
+            data["detectors"] = [d.strip() for d in v.split(",") if d.strip()]
+        if (v := _get("STRATEGY")) is not None:
+            data["strategy"] = v
+        if (v := _get("MIN_SCORE")) is not None:
+            data["min_score"] = float(v)
+        if (v := _get("LOCALE")) is not None:
+            data["locale"] = v
+        if (v := _get("PHONE_REGION")) is not None:
+            data["phone_region"] = v
+        if (v := _get("SEED")) is not None:
+            data["seed"] = int(v)
+        if (v := _get("ENABLED_TYPES")) is not None:
+            data["enabled_types"] = {t.strip().upper() for t in v.split(",") if t.strip()}
+        return cls.from_mapping(data)
+
+
+def _load_mapping(path: str) -> dict[str, Any]:
+    """Parse a config file into a dict, choosing the parser by extension."""
+    import json
+
+    lower = path.lower()
+    with open(path, "rb") as fh:
+        raw = fh.read()
+
+    if lower.endswith(".json"):
+        return json.loads(raw.decode("utf-8"))
+    if lower.endswith((".toml",)):
+        try:
+            import tomllib  # Python 3.11+
+        except ModuleNotFoundError:  # pragma: no cover - 3.10 fallback
+            import tomli as tomllib
+        return tomllib.loads(raw.decode("utf-8"))
+    if lower.endswith((".yaml", ".yml")):
+        try:
+            import yaml
+        except ImportError as exc:
+            raise ImportError(
+                'YAML config requires PyYAML: pip install "cloak-llm[config]"'
+            ) from exc
+        return yaml.safe_load(raw.decode("utf-8")) or {}
+    raise ValueError(f"Unsupported config extension for {path!r} (use .json/.toml/.yaml)")

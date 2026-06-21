@@ -55,6 +55,11 @@ proxy = [
 llm = [
     "httpx>=0.27.0",
 ]
+# YAML config files (JSON + TOML need no deps on 3.11+).
+config = [
+    "pyyaml>=6.0",
+    "tomli>=2.0; python_version<'3.11'",
+]
 all = [
     "gliner>=0.2.0",
     "onnxruntime>=1.16.0",
@@ -64,6 +69,8 @@ all = [
     "fastapi>=0.110.0",
     "uvicorn>=0.27.0",
     "httpx>=0.27.0",
+    "pyyaml>=6.0",
+    "tomli>=2.0; python_version<'3.11'",
 ]
 dev = [
     "pytest>=8.0.0",

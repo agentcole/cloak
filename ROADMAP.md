@@ -27,9 +27,9 @@ Legend: ✅ done · 🚧 in progress · ⬜ planned · ❄️ deferred (out of c
 
 | ID | Item | Status |
 |----|------|:--:|
-| B1 | **PII eval harness** — labeled gold corpus + span-level precision/recall/F1 per type; regression thresholds. The credibility metric. | 🚧 |
-| B2 | **Compliance profiles** — `gdpr` / `hipaa` / `pci` / `strict` presets selecting detectors, types, strategy, thresholds. | 🚧 |
-| B3 | **Config-file loading** — policy from JSON/TOML/YAML + env. | 🚧 |
+| B1 | ~~PII eval harness~~ — **done**: `cloak eval` + `cloak.evaluate` give span-level P/R/F1 per type over a markup gold corpus; regex tier regression-tested at 1.00/1.00 on structured types. | ✅ |
+| B2 | ~~Compliance profiles~~ — **done**: `gdpr` / `hipaa` / `pci` / `strict` / `secrets` via `CloakPolicy.from_profile` / `--profile`. | ✅ |
+| B3 | ~~Config-file loading~~ — **done**: `CloakPolicy.from_file` (JSON/TOML/YAML), `.from_mapping`, `.from_env`; `--config`. | ✅ |
 | B4 | **Examples** — OpenAI/Anthropic SDK wrap, LangChain callback, proxy quickstart, a before/after notebook. | ⬜ |
 | B5 | **Dockerized proxy** — Dockerfile + compose (cloak ↔ Ollama ↔ app). | ⬜ |
 | B6 | **CI** — GitHub Actions: pytest + ruff + mypy across 3.10–3.13; PyPI publish. | ⬜ |

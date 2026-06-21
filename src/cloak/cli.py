@@ -38,6 +38,19 @@ def _read_input(path: str | None) -> str:
 
 
 def _policy_from_args(args: argparse.Namespace) -> CloakPolicy:
+    # --config / --profile are authoritative when given (they replace the other
+    # policy flags); precedence: config > profile > individual flags.
+    if getattr(args, "config", None):
+        try:
+            return CloakPolicy.from_file(args.config)
+        except (OSError, ValueError, ImportError) as exc:
+            _die(f"could not load config {args.config!r}: {exc}")
+    if getattr(args, "profile", None):
+        try:
+            return CloakPolicy.from_profile(args.profile)
+        except ValueError as exc:
+            _die(str(exc))
+
     detectors = [d.strip() for d in args.detectors.split(",") if d.strip()]
     policy = CloakPolicy(
         detectors=detectors,
@@ -62,6 +75,10 @@ def _policy_from_args(args: argparse.Namespace) -> CloakPolicy:
 
 
 def _add_detector_flags(p: argparse.ArgumentParser) -> None:
+    p.add_argument("--profile", default=None,
+                   help="Compliance preset (gdpr/hipaa/pci/strict/secrets); overrides other flags")
+    p.add_argument("--config", default=None,
+                   help="Policy file (.json/.toml/.yaml); overrides other flags")
     p.add_argument("--detectors", default="regex", help="Comma list: regex,ner,llm")
     p.add_argument(
         "--strategy",

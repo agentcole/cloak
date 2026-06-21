@@ -24,6 +24,7 @@ from .policy import (
     STRATEGY_REDACT,
     CloakPolicy,
 )
+from .profiles import PROFILES, profile_names
 from .types import CloakResult, Entity, VaultEntry
 from .vault import Vault
 
@@ -38,6 +39,8 @@ __all__ = [
     "mask",
     "unmask",
     "scan",
+    "PROFILES",
+    "profile_names",
     "STRATEGY_PLACEHOLDER",
     "STRATEGY_PSEUDONYM",
     "STRATEGY_REDACT",

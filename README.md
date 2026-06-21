@@ -29,10 +29,12 @@ It is a sibling of [`headroom`](../headroom) and borrows its architecture (tiere
 ```bash
 pip install "cloak-llm"          # core: regex detection + all 4 strategies, zero deps
 pip install "cloak-llm[ner]"     # + local NER (GLiNER/ONNX) for names, orgs, places
+pip install "cloak-llm[phone]"   # + validated, locale-aware phone detection
 pip install "cloak-llm[faker]"   # + realistic pseudonyms
 pip install "cloak-llm[mcp]"     # + MCP server
 pip install "cloak-llm[proxy]"   # + round-trip reverse proxy
 pip install "cloak-llm[llm]"     # + local/trusted-LLM tagging detector
+pip install "cloak-llm[config]"  # + YAML config files
 pip install "cloak-llm[all]"     # everything
 ```
 
@@ -108,6 +110,51 @@ The LLM detector refuses any non-loopback endpoint unless `policy.llm_allow_remo
 | `hash` | `[PERSON_a1b2c3d4]` | ✅ | stable across runs for a fixed seed |
 
 Pick globally (`strategy=...`) or per category (`strategy_by_type={"PERSON": "pseudonym"}`).
+
+## Compliance profiles
+
+Opinionated presets (starting points, not legal advice):
+
+| Profile | Detectors | Strategy | Scope |
+|---------|-----------|----------|-------|
+| `gdpr` | regex + ner | pseudonym | all personal data (pseudonymisation, Art. 4(5)) |
+| `hipaa` | regex + ner | placeholder | all 18 identifier classes, high recall |
+| `pci` | regex | hash | cardholder data only (CREDIT_CARD, IBAN) |
+| `secrets` | regex | redact | API keys / JWT / crypto addresses |
+| `strict` | regex + ner | redact | everything, lowest threshold |
+
+```python
+c = Cloak(CloakPolicy.from_profile("pci"))           # or from_profile("gdpr", strategy="redact")
+```
+```bash
+cloak scan report.txt --profile hipaa
+```
+
+## Config file & env
+
+```python
+CloakPolicy.from_file("policy.toml")   # .json / .toml / .yaml
+CloakPolicy.from_env()                 # CLOAK_PROFILE, CLOAK_DETECTORS, CLOAK_STRATEGY, …
+```
+```toml
+# policy.toml — base on a profile, then override
+profile = "gdpr"
+detectors = ["regex", "ner"]
+min_score = 0.5
+```
+```bash
+cloak mask notes.txt --config policy.toml --vault out.cloakvault
+```
+
+## Evaluate detection quality
+
+`cloak` ships a span-level precision/recall/F1 harness so coverage is measured, not guessed:
+
+```bash
+cloak eval eval/gold.txt --detectors regex          # P/R/F1 per entity type
+```
+
+Gold corpora use an inline `[[TYPE|value]]` markup (no manual offsets). The bundled corpus regression-tests the regex tier at **1.00 precision / 1.00 recall** on every structured type.
 
 ## Reversibility & the vault
 
