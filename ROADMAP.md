@@ -32,9 +32,9 @@ Legend: ✅ done · 🚧 in progress · ⬜ planned · ❄️ deferred (out of c
 | B3 | ~~Config-file loading~~ — **done**: `CloakPolicy.from_file` (JSON/TOML/YAML), `.from_mapping`, `.from_env`; `--config`. | ✅ |
 | B4 | **Examples** — OpenAI/Anthropic SDK wrap, LangChain callback, proxy quickstart, a before/after notebook. | ⬜ |
 | B5 | **Dockerized proxy** — Dockerfile + compose (cloak ↔ Ollama ↔ app). | ⬜ |
-| B6 | **CI** — GitHub Actions: pytest + ruff + mypy across 3.10–3.13; PyPI publish. | ⬜ |
+| B6 | ~~CI~~ — **done**: `ci.yml` runs ruff check/format + mypy + pytest on Python 3.10–3.13 and builds the wheel; `publish.yml` does PyPI Trusted Publishing on version tags. | ✅ |
 | B7 | **Docs** — architecture, policy reference, compliance profiles, threat model; `llms.txt`. | ⬜ |
-| B8 | **Project hygiene** — CHANGELOG, CONTRIBUTING, SECURITY.md, full Apache LICENSE text. | ⬜ |
+| B8 | **Project hygiene** — **mostly done**: CHANGELOG, CONTRIBUTING, SECURITY.md added; identity = symbolicinterfaces.com. (Full Apache LICENSE body still the short reference form.) | 🚧 |
 
 ## C. Explicitly deferred (parity with headroom, not pursued now)
 
@@ -44,5 +44,11 @@ Legend: ✅ done · 🚧 in progress · ⬜ planned · ❄️ deferred (out of c
 | C2 | `cloak wrap <agent>` agent wrappers + `.claude-plugin` marketplace. | ❄️ |
 | C3 | Full docs website (mkdocs/next). | ❄️ |
 
-## Current focus
-A1–A3 (fix shipped defects) → B1 (eval harness) → B2+B3 (profiles + config).
+## Done so far
+A1–A4, A6 (all shipped defects + proxy hardening); B1–B3 (eval, profiles, config);
+B6 (CI) + B8 hygiene + identity.
+
+## Next up
+A5 (detection breadth — passports/PHI/addresses/locales, secret formats, private
+keys), then B4/B5/B7 (examples, Dockerized proxy, docs). A7/A8 (pseudonym
+idempotency, vault security) as polish.
