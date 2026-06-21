@@ -30,10 +30,10 @@ Legend: ✅ done · 🚧 in progress · ⬜ planned · ❄️ deferred (out of c
 | B1 | ~~PII eval harness~~ — **done**: `cloak eval` + `cloak.evaluate` give span-level P/R/F1 per type over a markup gold corpus; regex tier regression-tested at 1.00/1.00 on structured types. | ✅ |
 | B2 | ~~Compliance profiles~~ — **done**: `gdpr` / `hipaa` / `pci` / `strict` / `secrets` via `CloakPolicy.from_profile` / `--profile`. | ✅ |
 | B3 | ~~Config-file loading~~ — **done**: `CloakPolicy.from_file` (JSON/TOML/YAML), `.from_mapping`, `.from_env`; `--config`. | ✅ |
-| B4 | **Examples** — OpenAI/Anthropic SDK wrap, LangChain callback, proxy quickstart, a before/after notebook. | ⬜ |
-| B5 | **Dockerized proxy** — Dockerfile + compose (cloak ↔ Ollama ↔ app). | ⬜ |
+| B4 | ~~Examples~~ — **done**: `examples/` quickstart, strategies+profiles, OpenAI-SDK wrap (runs against local Ollama), proxy + MCP guides. | ✅ |
+| B5 | ~~Dockerized proxy~~ — **done**: `Dockerfile` (runs `cloak proxy`, unprivileged) + `docker-compose.yml` (cloak ↔ Ollama); proxy command validated live against Ollama. | ✅ |
 | B6 | ~~CI~~ — **done**: `ci.yml` runs ruff check/format + mypy + pytest on Python 3.10–3.13 and builds the wheel; `publish.yml` does PyPI Trusted Publishing on version tags. | ✅ |
-| B7 | **Docs** — architecture, policy reference, compliance profiles, threat model; `llms.txt`. | ⬜ |
+| B7 | ~~Docs~~ — **done**: `docs/architecture.md`, `docs/policy.md` (field/profile/type reference), `docs/threat-model.md`, and `llms.txt`. | ✅ |
 | B8 | **Project hygiene** — **mostly done**: CHANGELOG, CONTRIBUTING, SECURITY.md added; identity = symbolicinterfaces.com. (Full Apache LICENSE body still the short reference form.) | 🚧 |
 
 ## C. Explicitly deferred (parity with headroom, not pursued now)
@@ -45,10 +45,10 @@ Legend: ✅ done · 🚧 in progress · ⬜ planned · ❄️ deferred (out of c
 | C3 | Full docs website (mkdocs/next). | ❄️ |
 
 ## Done so far
-A1–A4, A6 (all shipped defects + proxy hardening); B1–B3 (eval, profiles, config);
-B6 (CI) + B8 hygiene + identity.
+A1–A6 (all shipped defects, proxy hardening, detection breadth); B1–B7 (eval,
+profiles, config, examples, Docker, CI, docs); B8 hygiene + identity.
 
 ## Next up
-A5 (detection breadth — passports/PHI/addresses/locales, secret formats, private
-keys), then B4/B5/B7 (examples, Dockerized proxy, docs). A7/A8 (pseudonym
-idempotency, vault security) as polish.
+Only polish / tail items remain: A5-tail (passports, driver's licenses, postal
+addresses, more locales), A7 (pseudonym idempotency / double-mask), A8 (vault
+security hardening — encryption-by-default, zeroization). Deferred: C1–C3.

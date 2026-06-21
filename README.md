@@ -176,6 +176,13 @@ The `Vault` is the only thing needed to restore a response — and it holds the 
 - **Overlap resolution:** when detectors disagree, the highest-confidence, longest span wins (a date-formatted string stays `DATE`, not `PHONE`).
 - **Graceful degradation:** an optional detector whose dependency is missing is skipped with a warning, never a crash.
 
+## Documentation
+
+- [Architecture](docs/architecture.md) — pipeline, components, data flow
+- [Policy reference](docs/policy.md) — `CloakPolicy` fields, profiles, entity types
+- [Threat model](docs/threat-model.md) — trust boundaries and limitations
+- [Examples](examples/) · [Roadmap](ROADMAP.md) · [llms.txt](llms.txt)
+
 ## License
 
 Apache-2.0.

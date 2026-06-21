@@ -1,0 +1,45 @@
+# cloak
+
+> Local-first, reversible PII redaction for LLM prompts. Masks PII before it
+> reaches a model and restores it in the response. Library, CLI, MCP server, and
+> a round-trip reverse proxy. Core is dependency-free; detection runs locally.
+
+Pipeline: detect (regex + optional local NER + optional local LLM) → resolve
+(overlap merge, code-span skip, allow/deny) → replace (placeholder / pseudonym /
+redact / hash) → reversible Vault → restore on the response.
+
+## Docs
+
+- [README](README.md): overview, install, quickstart for every surface
+- [Architecture](docs/architecture.md): pipeline, components, data flow
+- [Policy reference](docs/policy.md): CloakPolicy fields, profiles, entity types
+- [Threat model](docs/threat-model.md): trust boundaries and limitations
+- [Roadmap](ROADMAP.md): status and gap analysis
+- [Contributing](CONTRIBUTING.md): dev setup and checks
+- [Security](SECURITY.md): reporting + handling sensitive data
+
+## Examples
+
+- [examples/quickstart.py](examples/quickstart.py): mask → restore round trip (offline)
+- [examples/strategies_and_profiles.py](examples/strategies_and_profiles.py): strategies + profiles
+- [examples/wrap_openai.py](examples/wrap_openai.py): wrap the OpenAI SDK (local Ollama by default)
+- [examples/proxy_quickstart.md](examples/proxy_quickstart.md): run the reverse proxy
+- [examples/mcp_usage.md](examples/mcp_usage.md): use cloak as an MCP server
+
+## Key source
+
+- `src/cloak/engine.py`: the Cloak orchestrator (mask_text / mask_messages / unmask)
+- `src/cloak/policy.py`: CloakPolicy + from_profile/from_file/from_env
+- `src/cloak/patterns.py`, `src/cloak/validators.py`: regex recognizers + checksums
+- `src/cloak/detectors/`: regex, phone, ner (gliner/spacy), llm (ollama)
+- `src/cloak/strategies/`: placeholder, pseudonym, redact, hash
+- `src/cloak/vault.py`: original↔token map, restore, encrypted persistence
+- `src/cloak/evaluate.py` + `eval/gold.txt`: precision/recall harness
+- `src/cloak/proxy/`, `src/cloak/mcp_server.py`: proxy + MCP surfaces
+
+## Commands
+
+- `cloak scan|mask|unmask <file>`: detect / mask / restore
+- `cloak eval eval/gold.txt --detectors regex`: measure precision/recall
+- `cloak proxy --upstream <url>`: round-trip masking proxy
+- `cloak serve-mcp`: MCP server over stdio
