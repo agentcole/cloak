@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import importlib.util
 import logging
+from typing import Any
 
 from ..policy import CloakPolicy
 from ..types import Entity
@@ -43,7 +44,7 @@ class NerDetector(Detector):
         self.backend = policy.ner_backend
         self.model_name = policy.ner_model
         self.labels = policy.ner_labels
-        self._model = None  # lazily loaded
+        self._model: Any = None  # lazily loaded model (GLiNER or spaCy Language)
 
     def available(self) -> bool:
         if self.backend == "gliner":
