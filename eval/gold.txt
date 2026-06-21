@@ -1,0 +1,57 @@
+# cloak gold evaluation corpus.
+#
+# One example per line. PII is annotated inline as [[TYPE|value]]; the loader
+# strips the markup to recover plain text + character-offset gold spans, so this
+# file stays human-editable (no manual offsets). Blank lines and lines starting
+# with '#' are ignored. Lines with no markup are negatives (must yield no
+# detections) and exercise precision.
+
+# --- EMAIL ---
+Please email [[EMAIL|jane.doe@acme.com]] before Friday.
+Reach the team at [[EMAIL|support@example.co.uk]] or on Slack.
+CC [[EMAIL|a.b+tag@sub.domain.io]] on the thread.
+
+# --- PHONE ---
+Call me at [[PHONE|+1 415 555 0123]] this afternoon.
+Our London office: [[PHONE|+44 20 7946 0958]].
+Dial [[PHONE|(415) 555-0123]] for support.
+
+# --- SSN ---
+His SSN is [[SSN|123-45-6789]] on file.
+
+# --- CREDIT_CARD ---
+Charge card [[CREDIT_CARD|4111 1111 1111 1111]] for the order.
+Visa [[CREDIT_CARD|4012888888881881]] expired.
+
+# --- IBAN ---
+Wire to [[IBAN|GB82WEST12345698765432]] by EOD.
+
+# --- IP_ADDRESS / MAC_ADDRESS ---
+The server [[IP_ADDRESS|192.168.1.254]] is down.
+Block MAC [[MAC_ADDRESS|00:1A:2B:3C:4D:5E]] at the switch.
+
+# --- URL ---
+See [[URL|https://example.com/path?q=1]] for details.
+
+# --- API_KEY ---
+Token [[API_KEY|sk-ant-abcdefghij0123456789XYZ]] leaked in logs.
+Rotate [[API_KEY|AKIAIOSFODNN7EXAMPLE]] immediately.
+
+# --- CRYPTO_ADDRESS ---
+Send to [[CRYPTO_ADDRESS|0x52908400098527886E0F7030069857D2E4169EE7]] now.
+
+# --- DATE ---
+Born on [[DATE|1990-07-15]] in Ohio.
+Meeting moved to [[DATE|01/15/2024]].
+
+# --- mixed ---
+[[EMAIL|cto@acme.com]] called from [[PHONE|+1 212 555 0199]] re card [[CREDIT_CARD|5555555555554444]].
+
+# --- NER types (PERSON/ORG/LOCATION): scored only when NER is enabled ---
+[[PERSON|Jane Doe]] joined [[ORGANIZATION|Acme Corp]] in [[LOCATION|Berlin]].
+[[PERSON|John Smith]] flew to [[LOCATION|Tokyo]] for the summit.
+
+# --- negatives (must produce no detections) ---
+The quarterly report is due next week.
+Please review the pull request when you have time.
+Run the build and check the logs for errors.

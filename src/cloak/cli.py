@@ -61,8 +61,7 @@ def _policy_from_args(args: argparse.Namespace) -> CloakPolicy:
     return policy
 
 
-def _add_policy_flags(p: argparse.ArgumentParser) -> None:
-    p.add_argument("input", nargs="?", help="Input file, or '-'/omitted for stdin")
+def _add_detector_flags(p: argparse.ArgumentParser) -> None:
     p.add_argument("--detectors", default="regex", help="Comma list: regex,ner,llm")
     p.add_argument(
         "--strategy",
@@ -80,6 +79,11 @@ def _add_policy_flags(p: argparse.ArgumentParser) -> None:
     p.add_argument("--seed", type=int, default=None, help="Deterministic seed")
     p.add_argument("--ner-backend", default=None, dest="ner_backend")
     p.add_argument("--ner-model", default=None, dest="ner_model")
+
+
+def _add_policy_flags(p: argparse.ArgumentParser) -> None:
+    p.add_argument("input", nargs="?", help="Input file, or '-'/omitted for stdin")
+    _add_detector_flags(p)
 
 
 def cmd_scan(args: argparse.Namespace) -> int:
@@ -132,6 +136,19 @@ def cmd_unmask(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_eval(args: argparse.Namespace) -> int:
+    from .evaluate import evaluate, load_corpus
+
+    try:
+        examples = load_corpus(args.dataset)
+    except OSError as exc:
+        _die(f"cannot read corpus {args.dataset!r}: {exc.strerror or exc}")
+    cloak = Cloak(_policy_from_args(args))
+    report = evaluate(cloak, examples)
+    print(report.format_table())
+    return 0
+
+
 def cmd_serve_mcp(args: argparse.Namespace) -> int:
     from .mcp_server import run as run_mcp
 
@@ -180,6 +197,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_unmask.add_argument("--vault", required=True, help="Vault file to restore from")
     p_unmask.add_argument("--password", default=None, help="Vault password (if encrypted)")
     p_unmask.set_defaults(func=cmd_unmask)
+
+    p_eval = sub.add_parser("eval", help="Score detectors against a gold corpus")
+    p_eval.add_argument("dataset", help="Gold corpus file ([[TYPE|value]] markup)")
+    _add_detector_flags(p_eval)
+    p_eval.set_defaults(func=cmd_eval)
 
     p_mcp = sub.add_parser("serve-mcp", help="Run the MCP server over stdio")
     p_mcp.set_defaults(func=cmd_serve_mcp)
