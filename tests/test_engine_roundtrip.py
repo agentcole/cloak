@@ -89,6 +89,23 @@ def test_non_scanned_roles_untouched():
     assert res.messages[1]["content"] == "c@d.com"
 
 
+def test_token_collision_in_input_does_not_corrupt_roundtrip():
+    # Input already contains a literal that looks like one of our tokens.
+    c = _engine()
+    text = "Ticket [EMAIL_1] is about jane@acme.com"
+    res = c.mask_text(text)
+    assert "[EMAIL_1]" in res.text  # the pre-existing literal is preserved
+    assert "jane@acme.com" not in res.text
+    assert c.unmask_text(res.text, res.vault) == text  # would fail without A7 fix
+
+
+def test_double_mask_is_stable():
+    c = _engine()
+    res = c.mask_text("mail jane@acme.com")
+    again = c.mask_text(res.text, res.vault)
+    assert again.text == res.text  # masked output isn't re-masked
+
+
 @pytest.mark.parametrize("strategy", ["placeholder", "hash"])
 def test_min_score_threshold_drops_low_confidence(strategy):
     # DATE scores 0.7; a 0.8 threshold should drop it (backend-agnostic).

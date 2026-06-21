@@ -51,6 +51,38 @@ def test_serialization_roundtrip():
     assert nxt == "[EMAIL_2]"
 
 
+def test_reserve_avoids_colliding_with_input_literal():
+    v = Vault(salt="s")
+    v.reserve("text containing a [EMAIL_1] literal")
+    token = v.allocate(_ent("EMAIL", "new@x.com"), PlaceholderStrategy())
+    assert token != "[EMAIL_1]"
+    assert v.restore(f"{token}") == "new@x.com"
+
+
+def test_clear_zeroizes():
+    v = Vault(salt="s")
+    v.allocate(_ent("EMAIL", "x@y.com"), PlaceholderStrategy())
+    v.clear()
+    assert len(v) == 0
+    assert v.restore("[EMAIL_1]") == "[EMAIL_1]"  # nothing to restore
+
+
+def test_context_manager_clears_on_exit():
+    v = Vault(salt="s")
+    with v as inner:
+        inner.allocate(_ent("EMAIL", "x@y.com"), PlaceholderStrategy())
+        assert len(inner) == 1
+    assert len(v) == 0
+
+
+def test_repr_does_not_leak_pii():
+    v = Vault(salt="s")
+    v.allocate(_ent("EMAIL", "secret@example.com"), PlaceholderStrategy())
+    assert "secret@example.com" not in repr(v)
+    assert "secret@example.com" not in repr(v.entries[0])
+    assert "secret@example.com" not in str(v)
+
+
 def test_longest_token_restored_first():
     # Ensure a token that is a substring of another restores correctly.
     v = Vault(salt="s")

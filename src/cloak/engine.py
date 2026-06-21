@@ -128,6 +128,7 @@ class Cloak:
     def mask_text(self, text: str, vault: Vault | None = None) -> CloakResult:
         """Mask a single string, returning the masked text and its vault."""
         vault = vault if vault is not None else Vault(salt=self._salt())
+        vault.reserve(text)  # don't reuse a token literal already in the input
         entities = self.scan(text)
         masked = self._replace(text, entities, vault)
         return CloakResult(

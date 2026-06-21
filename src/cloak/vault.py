@@ -12,7 +12,9 @@ surfaces (CLI, MCP, proxy) and optionally encrypted at rest.
 from __future__ import annotations
 
 import json
+import logging
 import os
+import re
 from typing import TYPE_CHECKING, Any
 
 from .types import VaultEntry
@@ -20,9 +22,20 @@ from .types import VaultEntry
 if TYPE_CHECKING:
     from .strategies.base import Strategy
 
+logger = logging.getLogger("cloak")
+
+# Shape of a cloak token already present in input (placeholder/redact/hash), so
+# we don't generate a colliding one. Allows lowercase for hash suffixes.
+_TOKEN_RE = re.compile(r"\[[A-Z][A-Za-z0-9_]*\]")
+
 
 def _random_salt() -> str:
     return os.urandom(8).hex()
+
+
+def _suffix(token: str, n: int) -> str:
+    """Append a disambiguator, keeping the trailing ``]`` if present."""
+    return f"{token[:-1]}.{n}]" if token.endswith("]") else f"{token}.{n}"
 
 
 class Vault:
@@ -32,15 +45,32 @@ class Vault:
         self._original_by_token: dict[str, str] = {}
         self._counter: dict[str, int] = {}
         self._entries: list[VaultEntry] = []
+        # Token literals already present in the input — never generate these,
+        # or restore would corrupt the pre-existing literal (idempotency / A7).
+        self._reserved: set[str] = set()
 
     # -- allocation -------------------------------------------------------
+
+    def reserve(self, text: str) -> None:
+        """Record cloak-shaped token literals already in ``text`` as off-limits.
+
+        Call before masking so a real value can't be assigned a token that
+        already appears verbatim in the input.
+        """
+        self._reserved.update(_TOKEN_RE.findall(text))
+
+    def _token_taken(self, token: str, original: str) -> bool:
+        if token in self._reserved:
+            return True
+        owner = self._original_by_token.get(token)
+        return owner is not None and owner != original
 
     def allocate(self, entity: Any, strategy: Strategy) -> str:
         """Return the token for ``entity``, creating one if needed.
 
         Coreference: a repeat of the same (type, text) returns the existing
-        token. For reversible strategies, token collisions across *different*
-        originals are broken deterministically by re-salting.
+        token. Token collisions — with a different original, or with a literal
+        already present in the input — are broken by re-salting, then a suffix.
         """
         key = (entity.type, entity.text)
         existing = self._token_by_key.get(key)
@@ -50,18 +80,19 @@ class Vault:
         idx = self._counter.get(entity.type, 0) + 1
         self._counter[entity.type] = idx
 
-        attempt = 0
         token = strategy.generate(entity, idx, self.salt)
-        if strategy.reversible:
-            while True:
-                owner = self._original_by_token.get(token)
-                if owner is None or owner == entity.text:
+        if strategy.reversible and self._token_taken(token, entity.text):
+            base = token
+            n = 1
+            while self._token_taken(token, entity.text):
+                n += 1
+                # Re-salting varies hash/pseudonym output; placeholder ignores
+                # the salt, so fall back to a readable suffix.
+                resalted = strategy.generate(entity, idx, f"{self.salt}:{n}")
+                token = resalted if resalted != base else _suffix(base, n)
+                if n > 1000:
+                    token = _suffix(base, idx)
                     break
-                attempt += 1
-                if attempt > 1000:
-                    token = f"{token}-{idx}"
-                    break
-                token = strategy.generate(entity, idx, f"{self.salt}:{attempt}")
 
         self._token_by_key[key] = token
         self._entries.append(
@@ -103,6 +134,29 @@ class Vault:
 
     def __bool__(self) -> bool:
         return bool(self._entries)
+
+    def __repr__(self) -> str:
+        # Never include originals/tokens — a vault holds raw PII and may be
+        # logged accidentally.
+        return f"<Vault entries={len(self._entries)} (contents hidden)>"
+
+    __str__ = __repr__
+
+    def clear(self) -> None:
+        """Wipe all mappings (zeroize). The vault can no longer restore."""
+        self._token_by_key.clear()
+        self._original_by_token.clear()
+        self._counter.clear()
+        self._entries.clear()
+        self._reserved.clear()
+
+    def __enter__(self) -> Vault:
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        # Auto-wipe PII when used as a context manager:
+        #   with cloak.mask_text(t).vault as v: ... (cleared on exit)
+        self.clear()
 
     # -- serialization ----------------------------------------------------
 
@@ -149,6 +203,12 @@ class Vault:
         payload = json.dumps(self.to_dict()).encode()
         if password is not None:
             payload = _encrypt(payload, password)
+        elif self._entries:
+            logger.warning(
+                "Vault.save(%s) is writing UNENCRYPTED raw PII; pass password=... "
+                "to encrypt at rest.",
+                path,
+            )
         with open(path, "wb") as fh:
             fh.write(payload)
 

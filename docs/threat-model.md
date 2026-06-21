@@ -15,7 +15,10 @@ values are restored in the response so your users still see real data.
   `[EMAIL_1]` leave your machine (assuming recall caught the PII — see limits).
 - **The Vault is a secret.** It holds the original ↔ token mapping, i.e. the raw
   PII. Anyone with the vault can de-mask. Never commit, log, or transmit it.
-  Encrypt at rest with `Vault.save(path, password=...)`.
+  Encrypt at rest with `Vault.save(path, password=...)`; wipe it with
+  `vault.clear()` (or use it as a context manager — `with res.vault as v:` —
+  which clears on exit). Its `repr()` omits contents so an accidental log won't
+  leak PII.
 
 ## Limitations (read these)
 

@@ -41,7 +41,7 @@ class Entity:
         return self.start < other.end and other.start < self.end
 
 
-@dataclass
+@dataclass(repr=False)
 class VaultEntry:
     """A single reversible mapping between an original value and its token."""
 
@@ -49,6 +49,11 @@ class VaultEntry:
     original: str
     type: str
     reversible: bool = True
+
+    def __repr__(self) -> str:
+        # Mask the original — a VaultEntry holds raw PII.
+        shown = (self.original[:1] + "…") if self.original else ""
+        return f"VaultEntry(token={self.token!r}, type={self.type!r}, original='{shown}')"
 
 
 @dataclass
