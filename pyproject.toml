@@ -9,7 +9,7 @@ description = "Local-first, reversible PII redaction for LLM prompts — library
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
-authors = [{ name = "cloak contributors" }]
+authors = [{ name = "symbolicinterfaces.com" }]
 keywords = ["pii", "privacy", "redaction", "anonymization", "llm", "mcp", "proxy", "ner"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -83,8 +83,7 @@ dev = [
 cloak = "cloak.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/cloak-llm/cloak"
-Issues = "https://github.com/cloak-llm/cloak/issues"
+Homepage = "https://symbolicinterfaces.com"
 
 [tool.hatch.version]
 path = "src/cloak/_version.py"
