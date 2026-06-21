@@ -21,6 +21,7 @@ from cloak.policy import CloakPolicy
         (V.npi_valid, "1234567893", "1234567894"),
         (V.aadhaar_valid, "234123456783", "234123456784"),
         (V.vin_valid, "1HGBH41JXMN109186", "1HGBH41JXMN109187"),
+        (V.canada_sin_valid, "130692544", "130692545"),
     ],
 )
 def test_validator_accepts_valid_rejects_tampered(fn, valid, invalid):
@@ -68,6 +69,8 @@ def detect():
         ("vin 1HGBH41JXMN109186 ok", "VIN", "1HGBH41JXMN109186"),
         ("zip 90210-1234 ok", "US_ZIP", "90210-1234"),
         ("at 37.7749, -122.4194 ok", "GEO_COORDINATE", "37.7749, -122.4194"),
+        ("ship to 1600 Pennsylvania Avenue today", "ADDRESS", "1600 Pennsylvania Avenue"),
+        ("sin 130 692 544 ok", "NATIONAL_ID", "130 692 544"),
     ],
 )
 def test_recognizes(detect, text, etype, value):

@@ -18,7 +18,7 @@ Legend: ✅ done · 🚧 in progress · ⬜ planned · ❄️ deferred (out of c
 | A2 | ~~`[phone]` extra is dead~~ — **fixed**: dedicated `PhoneDetector` uses libphonenumber (validated, locale-aware, 0.95) with a regex fallback (0.6). | ✅ |
 | A3 | ~~`mypy` never run; no `py.typed`~~ — **fixed**: `py.typed` shipped; `mypy` clean on 25 files. | ✅ |
 | A4 | ~~LLM detector never run against a real model~~ — **validated** against live Ollama (llama3.1); hardened with configurable timeout, `raise_for_status`, shape-tolerant JSON parsing, and a tested non-loopback refusal. Opt-in live test (`CLOAK_TEST_OLLAMA=1`). | ✅ |
-| A5 | ~~Thin detection coverage~~ — **expanded**: PEM private keys; Stripe/SendGrid/Twilio/Google/GitHub-PAT/OpenAI-proj/npm/PyPI secrets; national IDs (UK NINO, Spain DNI, Italy codice, India PAN/Aadhaar, Brazil CPF, Germany Steuer-ID, France INSEE) + US EIN/NPI; VIN, geo-coordinates, ZIP+4, handles — all checksum/format-validated, regression-tested in `eval/gold.txt` at 1.00 precision. (Remaining: passports/driver's-licenses, postal addresses, more locales.) | ✅ |
+| A5 | ~~Thin detection coverage~~ — **expanded**: PEM private keys; Stripe/SendGrid/Twilio/Google/GitHub-PAT/OpenAI-proj/npm/PyPI secrets; national IDs (UK NINO, Spain DNI, Italy codice, India PAN/Aadhaar, Brazil CPF, Germany Steuer-ID, France INSEE) + US EIN/NPI; Canada SIN; US street addresses; VIN, geo-coordinates, ZIP+4, handles — all checksum/format-validated, regression-tested in `eval/gold.txt` at 1.00 precision. (Remaining: passports, driver's licenses, non-US postal formats, more locales.) | ✅ |
 | A6 | ~~Proxy hardening~~ — **done**: Anthropic `system`+content-block masking (tested), bounded connect/write timeouts (read unbounded for streams), clean 502 on unreachable upstream, masking offloaded to a threadpool, thread-safe pseudonym strategy, guaranteed upstream close, bounded MCP vault store. | ✅ |
 | A7 | ~~double-masking/idempotency~~ — **fixed**: token-collision protection (`Vault.reserve`) so a real value never reuses a token literal already in the input; masked output isn't re-masked; restore is idempotent. (Pseudonym restore remains best-effort by design — see threat model.) | ✅ |
 | A8 | ~~Vault security~~ — **hardened**: `Vault.clear()` zeroization, context-manager auto-wipe, PII-safe `__repr__`/`VaultEntry` repr, warning on unencrypted save. (Encryption was already available via `save(password=...)`.) | ✅ |
@@ -49,6 +49,6 @@ A1–A6 (all shipped defects, proxy hardening, detection breadth); B1–B7 (eval
 profiles, config, examples, Docker, CI, docs); B8 hygiene + identity.
 
 ## Next up
-Only polish / tail items remain: A5-tail (passports, driver's licenses, postal
-addresses, more locales), A7 (pseudonym idempotency / double-mask), A8 (vault
-security hardening — encryption-by-default, zeroization). Deferred: C1–C3.
+The in-scope roadmap is complete. Optional future tail: passports / driver's
+licenses (need contextual cues to stay precise), non-US postal-address formats,
+and more phone/ID locales. Deferred by decision: C1–C3.

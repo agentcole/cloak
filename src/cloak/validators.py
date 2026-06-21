@@ -22,6 +22,14 @@ def _luhn(number: str) -> bool:
     return checksum % 10 == 0
 
 
+def canada_sin_valid(value: str) -> bool:
+    """Canadian Social Insurance Number: 9 digits, Luhn; first digit not 0 or 8."""
+    d = [c for c in value if c.isdigit()]
+    if len(d) != 9 or d[0] in ("0", "8"):
+        return False
+    return _luhn("".join(d))
+
+
 def spain_dni_valid(value: str) -> bool:
     """Spanish DNI/NIE: 8 digits + a check letter (mod-23)."""
     s = value.replace("-", "").replace(" ", "").upper()

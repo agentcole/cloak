@@ -28,6 +28,7 @@ STRUCTURED = {
     "VIN",
     "US_ZIP",
     "GEO_COORDINATE",
+    "ADDRESS",
 }
 
 

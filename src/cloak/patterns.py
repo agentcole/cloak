@@ -13,6 +13,7 @@ from dataclasses import dataclass
 
 from .validators import (
     aadhaar_valid,
+    canada_sin_valid,
     cpf_valid,
     france_insee_valid,
     german_taxid_valid,
@@ -147,6 +148,9 @@ PATTERNS: list[PiiPattern] = [
         "NATIONAL_ID", _C(r"\b[12]\d{14}\b"), 0.55, validator=france_insee_valid
     ),  # FR INSEE
     PiiPattern("NATIONAL_ID", _C(r"\b[2-9]\d{3}\s?\d{4}\s?\d{4}\b"), 0.55, validator=aadhaar_valid),
+    PiiPattern(
+        "NATIONAL_ID", _C(r"\b\d{3}[- ]?\d{3}[- ]?\d{3}\b"), 0.55, validator=canada_sin_valid
+    ),  # Canada SIN
     PiiPattern("MEDICAL_ID", _C(r"\b\d{10}\b"), 0.55, validator=npi_valid),  # US NPI
     # --- Contact ---
     PiiPattern(
@@ -174,6 +178,16 @@ PATTERNS: list[PiiPattern] = [
     # --- Crypto wallets ---
     PiiPattern("CRYPTO_ADDRESS", _C(r"\b0x[a-fA-F0-9]{40}\b"), 0.9),  # ETH
     PiiPattern("CRYPTO_ADDRESS", _C(r"\b(?:bc1|[13])[a-km-zA-HJ-NP-Z1-9]{25,39}\b"), 0.7),  # BTC
+    # --- Street address (US-style: number + capitalized name + suffix) ---
+    PiiPattern(
+        "ADDRESS",
+        _C(
+            r"\b\d{1,6}\s+(?:[A-Z][a-zA-Z]*\.?\s+){1,4}"
+            r"(?:Street|St|Avenue|Ave|Boulevard|Blvd|Road|Rd|Drive|Dr|Lane|Ln|Way|"
+            r"Court|Ct|Place|Pl|Terrace|Ter|Circle|Cir|Parkway|Pkwy)\b\.?"
+        ),
+        0.6,
+    ),
     # --- Vehicle / geo / misc ---
     PiiPattern("VIN", _C(r"\b[A-HJ-NPR-Z0-9]{17}\b"), 0.8, validator=vin_valid),
     PiiPattern(
