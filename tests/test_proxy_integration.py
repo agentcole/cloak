@@ -39,6 +39,23 @@ def upstream_port():
             }
         )
 
+    @app.post("/v1/messages")
+    async def messages(request: Request):
+        # Anthropic-style: top-level `system` + message content blocks.
+        body = await request.json()
+        system = body.get("system", "")
+        content = body["messages"][-1]["content"]
+        if isinstance(content, list):
+            content = " ".join(b.get("text", "") for b in content)
+        combined = f"{system} {content}"
+        return JSONResponse(
+            {
+                "saw_token": "[EMAIL_" in combined,
+                "saw_plain": "jane@acme.com" in combined,
+                "content": [{"type": "text", "text": f"Reply about {content}"}],
+            }
+        )
+
     @app.post("/v1/stream")
     async def stream(request: Request):
         body = await request.json()
@@ -95,3 +112,34 @@ def test_streaming_response_is_restored(client):
     resp = client.post("/v1/stream", json=_payload())
     assert "jane@acme.com" in resp.text
     assert "[EMAIL_1]" not in resp.text
+
+
+def test_anthropic_system_and_content_blocks(client):
+    payload = {
+        "model": "claude-x",
+        "system": "contact jane@acme.com",
+        "messages": [{"role": "user", "content": [{"type": "text", "text": "and jane@acme.com"}]}],
+    }
+    data = client.post("/v1/messages", json=payload).json()
+    assert data["saw_token"] is True  # both system + block masked upstream
+    assert data["saw_plain"] is False
+    assert "jane@acme.com" in data["content"][0]["text"]  # restored for the caller
+
+
+def test_unreachable_upstream_returns_502():
+    from starlette.testclient import TestClient
+
+    from cloak import Cloak, CloakPolicy
+    from cloak.proxy.server import build_app
+
+    app = build_app(
+        "http://127.0.0.1:9",  # discard port: connection refused
+        lambda: Cloak(CloakPolicy(detectors=["regex"])),
+        restore=True,
+        connect_timeout=1.0,
+    )
+    resp = TestClient(app).post(
+        "/v1/chat/completions", json={"messages": [{"role": "user", "content": "hi a@b.com"}]}
+    )
+    assert resp.status_code == 502
+    assert resp.json()["error"]["type"] == "upstream_unreachable"

@@ -16,6 +16,7 @@ Requires the ``faker`` extra: ``pip install "cloak-llm[faker]"``.
 from __future__ import annotations
 
 import hashlib
+import threading
 
 from ..types import Entity
 from .base import Strategy
@@ -39,6 +40,9 @@ class PseudonymStrategy(Strategy):
                 'Install it with: pip install "cloak-llm[faker]"'
             ) from exc
         self._faker = Faker(locale)
+        # Faker.seed_instance mutates shared RNG state; guard so concurrent
+        # requests (e.g. in the threaded proxy) can't interleave seed→generate.
+        self._lock = threading.Lock()
 
     def _fake_for(self, entity: Entity) -> str:
         f = self._faker
@@ -68,5 +72,6 @@ class PseudonymStrategy(Strategy):
         return str(provider())
 
     def generate(self, entity: Entity, index: int, salt: str) -> str:
-        self._faker.seed_instance(_seed_int(salt, entity))
-        return self._fake_for(entity)
+        with self._lock:
+            self._faker.seed_instance(_seed_int(salt, entity))
+            return self._fake_for(entity)

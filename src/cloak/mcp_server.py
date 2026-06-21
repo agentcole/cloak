@@ -15,13 +15,23 @@ Requires the ``mcp`` extra: ``pip install "cloak-llm[mcp]"``.
 from __future__ import annotations
 
 import uuid
+from collections import OrderedDict
 
 from .engine import Cloak
 from .policy import CloakPolicy
 from .vault import Vault
 
-# In-memory vault store keyed by the id handed back to the client.
-_VAULTS: dict[str, Vault] = {}
+# In-memory vault store keyed by the id handed back to the client. Vaults hold
+# raw PII, so the store is capacity-bounded (oldest evicted) to cap retention.
+_MAX_VAULTS = 256
+_VAULTS: OrderedDict[str, Vault] = OrderedDict()
+
+
+def _store_vault(vault_id: str, vault: Vault) -> None:
+    _VAULTS[vault_id] = vault
+    _VAULTS.move_to_end(vault_id)
+    while len(_VAULTS) > _MAX_VAULTS:
+        _VAULTS.popitem(last=False)
 
 
 def _cloak(strategy: str, detectors: str) -> Cloak:
@@ -64,7 +74,7 @@ def _build_server():  # pragma: no cover - thin wiring over the mcp package
         cloak = _cloak(strategy, detectors)
         result = cloak.mask_text(text)
         vault_id = uuid.uuid4().hex
-        _VAULTS[vault_id] = result.vault
+        _store_vault(vault_id, result.vault)
         return {
             "masked_text": result.text,
             "vault_id": vault_id,

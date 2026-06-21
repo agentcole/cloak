@@ -65,15 +65,23 @@ def build_app(
     upstream: str,
     cloak_factory: Callable[[], Cloak],
     restore: bool = True,
+    connect_timeout: float = 10.0,
 ):  # pragma: no cover - exercised via integration, not unit tests
-    """Build the FastAPI proxy app."""
+    """Build the FastAPI proxy app.
+
+    ``connect_timeout`` bounds how long we wait to reach the upstream; the read
+    timeout is intentionally unbounded so long LLM streams aren't cut off.
+    """
     import httpx
     from fastapi import FastAPI, Request, Response
-    from fastapi.responses import StreamingResponse
+    from fastapi.responses import JSONResponse, StreamingResponse
+    from starlette.concurrency import run_in_threadpool
 
     upstream = upstream.rstrip("/")
     app = FastAPI(title="cloak-proxy")
-    client = httpx.AsyncClient(timeout=None)
+    # read=None keeps streaming responses alive; connect/write/pool are bounded.
+    timeout = httpx.Timeout(None, connect=connect_timeout, write=30.0, pool=30.0)
+    client = httpx.AsyncClient(timeout=timeout)
 
     @app.api_route(
         "/{path:path}",
@@ -83,7 +91,9 @@ def build_app(
         raw = await request.body()
         cloak = cloak_factory()
         content_type = request.headers.get("content-type", "")
-        masked, vault = _mask_body(cloak, raw, content_type)
+        # Detection (regex/NER) is CPU-bound and sync — run it off the event
+        # loop so one request can't stall the whole proxy.
+        masked, vault = await run_in_threadpool(_mask_body, cloak, raw, content_type)
 
         req_headers = _filter_headers(dict(request.headers), _DROP_REQUEST_HEADERS)
         req_headers["accept-encoding"] = "identity"  # keep bytes restorable
@@ -96,7 +106,13 @@ def build_app(
             content=masked,
             headers=req_headers,
         )
-        resp = await client.send(upstream_req, stream=True)
+        try:
+            resp = await client.send(upstream_req, stream=True)
+        except httpx.RequestError as exc:
+            return JSONResponse(
+                {"error": {"type": "upstream_unreachable", "message": str(exc)}},
+                status_code=502,
+            )
         resp_ctype = resp.headers.get("content-type", "")
         resp_headers = _filter_headers(dict(resp.headers), _DROP_RESPONSE_HEADERS)
 
@@ -104,14 +120,18 @@ def build_app(
             restorer = StreamRestorer(vault)
 
             async def stream():
-                async for chunk in resp.aiter_bytes():
-                    out = restorer.feed(chunk.decode("utf-8", errors="replace"))
-                    if out:
-                        yield out.encode()
-                tail = restorer.flush()
-                if tail:
-                    yield tail.encode()
-                await resp.aclose()
+                try:
+                    async for chunk in resp.aiter_bytes():
+                        out = restorer.feed(chunk.decode("utf-8", errors="replace"))
+                        if out:
+                            yield out.encode()
+                    tail = restorer.flush()
+                    if tail:
+                        yield tail.encode()
+                finally:
+                    # Always release the upstream connection, even on client
+                    # disconnect or mid-stream error.
+                    await resp.aclose()
 
             return StreamingResponse(
                 stream(),
@@ -141,6 +161,7 @@ def run(
     strategy: str = "placeholder",
     detectors: list[str] | None = None,
     restore: bool = True,
+    connect_timeout: float = 10.0,
 ) -> None:
     """Run the proxy with uvicorn."""
     import uvicorn
@@ -150,6 +171,6 @@ def run(
     # Each request still gets its own Vault, so masking stays request-isolated.
     shared = Cloak(CloakPolicy(detectors=dets, strategy=strategy))
 
-    app = build_app(upstream, lambda: shared, restore=restore)
+    app = build_app(upstream, lambda: shared, restore=restore, connect_timeout=connect_timeout)
     print(f"[cloak] proxy on http://{host}:{port}  ->  {upstream}  (restore={restore})")
     uvicorn.run(app, host=host, port=port)
