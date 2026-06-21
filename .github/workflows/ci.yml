@@ -24,22 +24,25 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # Core + the lightweight extras. NER / Faker / MCP / LLM are heavy or need
-      # a running service; their tests skip gracefully when absent.
-      - name: Install
-        run: uv pip install --system -e ".[dev,proxy,phone,config]"
+      # Install into a venv (the runner's system Python is externally managed,
+      # so --system is blocked). Core + the lightweight extras; NER / Faker /
+      # MCP / LLM are heavy or need a service — their tests skip when absent.
+      - name: Create venv + install
+        run: |
+          uv venv
+          uv pip install -e ".[dev,proxy,phone,config]"
 
       - name: Lint (ruff)
-        run: ruff check .
+        run: .venv/bin/python -m ruff check .
 
       - name: Format check (ruff)
-        run: ruff format --check .
+        run: .venv/bin/python -m ruff format --check .
 
       - name: Type check (mypy)
-        run: mypy src/cloak
+        run: .venv/bin/python -m mypy src/cloak
 
       - name: Test (pytest)
-        run: pytest -q
+        run: .venv/bin/python -m pytest -q
 
   build:
     runs-on: ubuntu-latest
@@ -53,5 +56,6 @@ jobs:
         run: uv build
       - name: Install the built wheel and import
         run: |
-          uv pip install --system dist/*.whl
-          python -c "import cloak; print('cloak', cloak.__version__)"
+          uv venv
+          uv pip install dist/*.whl
+          .venv/bin/python -c "import cloak; print('cloak', cloak.__version__)"
