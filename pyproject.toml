@@ -1,0 +1,103 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cloak-llm"
+dynamic = ["version"]
+description = "Local-first, reversible PII redaction for LLM prompts — library, CLI, MCP server, and round-trip proxy."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "cloak contributors" }]
+keywords = ["pii", "privacy", "redaction", "anonymization", "llm", "mcp", "proxy", "ner"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+# Core has ZERO required third-party deps: regex detection + all four
+# replacement strategies + vault + round-trip restore run on the stdlib.
+dependencies = []
+
+[project.optional-dependencies]
+# Local NER for unstructured PII (names, orgs, locations, dates).
+ner = [
+    "gliner>=0.2.0",
+    "onnxruntime>=1.16.0",
+]
+# spaCy as an alternative NER backend.
+spacy = [
+    "spacy>=3.5.0",
+]
+# Format-preserving fake values (the "pseudonym" strategy).
+faker = [
+    "faker>=24.0.0",
+]
+# Better phone-number detection/validation.
+phone = [
+    "phonenumbers>=8.13.0",
+]
+# MCP server surface.
+mcp = [
+    "mcp>=1.2.0",
+]
+# Round-trip reverse proxy surface.
+proxy = [
+    "fastapi>=0.110.0",
+    "uvicorn>=0.27.0",
+    "httpx>=0.27.0",
+]
+# Local/trusted LLM tagging detector (Ollama / OpenAI-compatible localhost).
+llm = [
+    "httpx>=0.27.0",
+]
+all = [
+    "gliner>=0.2.0",
+    "onnxruntime>=1.16.0",
+    "faker>=24.0.0",
+    "phonenumbers>=8.13.0",
+    "mcp>=1.2.0",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.27.0",
+    "httpx>=0.27.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.4.0",
+    "mypy>=1.9.0",
+]
+
+[project.scripts]
+cloak = "cloak.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/cloak-llm/cloak"
+Issues = "https://github.com/cloak-llm/cloak/issues"
+
+[tool.hatch.version]
+path = "src/cloak/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cloak"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "W"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_unused_ignores = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
