@@ -91,7 +91,7 @@ def test_non_scanned_roles_untouched():
 
 @pytest.mark.parametrize("strategy", ["placeholder", "hash"])
 def test_min_score_threshold_drops_low_confidence(strategy):
-    # PHONE scores 0.6; a 0.7 threshold should drop it.
-    c = _engine(strategy=strategy, min_score=0.7)
-    res = c.mask_text("call 415-555-0123")
-    assert "415-555-0123" in res.text
+    # DATE scores 0.7; a 0.8 threshold should drop it (backend-agnostic).
+    c = _engine(strategy=strategy, min_score=0.8)
+    res = c.mask_text("met on 01/15/2024")
+    assert "01/15/2024" in res.text

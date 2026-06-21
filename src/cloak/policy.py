@@ -17,6 +17,7 @@ STRATEGY_HASH = "hash"
 
 # Detector names (see cloak.detectors).
 DETECTOR_REGEX = "regex"
+DETECTOR_PHONE = "phone"
 DETECTOR_NER = "ner"
 DETECTOR_LLM = "llm"
 
@@ -70,6 +71,11 @@ class CloakPolicy:
     # Pseudonym / hash
     locale: str = "en_US"
     seed: int | None = None
+
+    # Phone detection: assumed region for nationally-formatted numbers
+    # (the optional ``phonenumbers`` library). International numbers match
+    # regardless.
+    phone_region: str = "US"
 
     # NER detector
     ner_backend: str = "gliner"

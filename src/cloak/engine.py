@@ -18,8 +18,15 @@ import re
 from typing import Any
 
 from .detectors.base import Detector
+from .detectors.phone_detector import PhoneDetector
 from .detectors.regex_detector import RegexDetector
-from .policy import DETECTOR_LLM, DETECTOR_NER, DETECTOR_REGEX, CloakPolicy
+from .policy import (
+    DETECTOR_LLM,
+    DETECTOR_NER,
+    DETECTOR_PHONE,
+    DETECTOR_REGEX,
+    CloakPolicy,
+)
 from .resolver import Resolver
 from .strategies import build_strategy_map
 from .strategies.base import Strategy
@@ -44,7 +51,12 @@ class Cloak:
         detectors: list[Detector] = []
         for name in self.policy.detectors:
             if name == DETECTOR_REGEX:
+                # The regex tier covers structured PII + phone numbers (the
+                # latter via phonenumbers when installed, else a regex fallback).
                 detectors.append(RegexDetector())
+                detectors.append(PhoneDetector(self.policy))
+            elif name == DETECTOR_PHONE:
+                detectors.append(PhoneDetector(self.policy))
             elif name == DETECTOR_NER:
                 from .detectors.ner_detector import NerDetector
 

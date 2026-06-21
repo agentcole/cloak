@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from .base import Detector
+from .phone_detector import PhoneDetector
 from .regex_detector import RegexDetector
 
-__all__ = ["Detector", "RegexDetector", "NerDetector", "LlmDetector"]
+__all__ = ["Detector", "RegexDetector", "PhoneDetector", "NerDetector", "LlmDetector"]
 
 
 def __getattr__(name: str):  # lazy: avoid importing optional-dep modules eagerly

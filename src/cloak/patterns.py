@@ -98,12 +98,6 @@ PATTERNS: list[PiiPattern] = [
         _C(r"\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b"),
         0.98,
     ),
-    PiiPattern(
-        "PHONE",
-        _C(r"(?<!\w)(?:\+\d{1,3}[\s.\-]?)?\(?\d{2,4}\)?(?:[\s.\-]\d{2,4}){1,4}(?!\w)"),
-        0.6,
-        validator=lambda v: 7 <= sum(c.isdigit() for c in v) <= 15,
-    ),
     # --- Network ---
     PiiPattern(
         "IP_ADDRESS",
@@ -134,5 +128,15 @@ PATTERNS: list[PiiPattern] = [
     ),
 ]
 
+# Regex fallback for phone numbers, used by PhoneDetector when the optional
+# ``phonenumbers`` library isn't installed. Noisier than phonenumbers (no real
+# validation or locale), hence the lower score.
+PHONE_FALLBACK = PiiPattern(
+    "PHONE",
+    _C(r"(?<!\w)(?:\+\d{1,3}[\s.\-]?)?\(?\d{2,4}\)?(?:[\s.\-]\d{2,4}){1,4}(?!\w)"),
+    0.6,
+    validator=lambda v: 7 <= sum(c.isdigit() for c in v) <= 15,
+)
+
 # Canonical category set, for documentation / CLI help.
-STRUCTURED_TYPES: tuple[str, ...] = tuple(dict.fromkeys(p.type for p in PATTERNS))
+STRUCTURED_TYPES: tuple[str, ...] = tuple(dict.fromkeys(p.type for p in PATTERNS)) + ("PHONE",)

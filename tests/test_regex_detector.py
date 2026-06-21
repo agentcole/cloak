@@ -52,10 +52,6 @@ def test_iban_mod97(detect):
     assert "IBAN" not in detect("acct GB00WEST12345698765432")  # invalid checksum
 
 
-def test_phone_variants(detect):
-    for p in ["+1 415 555 0123", "(415) 555-0123", "415-555-0123", "+44 20 7946 0958"]:
-        assert "PHONE" in detect(p), p
-
-
-def test_short_number_not_a_phone(detect):
-    assert "PHONE" not in detect("only 12-34")
+def test_regex_detector_does_not_emit_phone(detect):
+    # Phone detection moved to PhoneDetector; RegexDetector should not emit it.
+    assert "PHONE" not in detect("call 415-555-0123")

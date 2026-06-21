@@ -46,6 +46,7 @@ def _policy_from_args(args: argparse.Namespace) -> CloakPolicy:
         skip_code_blocks=not args.no_skip_code,
         locale=args.locale,
         seed=args.seed,
+        phone_region=args.phone_region,
     )
     if args.types:
         policy.enabled_types = {t.strip().upper() for t in args.types.split(",") if t.strip()}
@@ -74,6 +75,8 @@ def _add_policy_flags(p: argparse.ArgumentParser) -> None:
     p.add_argument("--deny", default="", help="Literal strings to always mask (comma list)")
     p.add_argument("--no-skip-code", action="store_true", dest="no_skip_code")
     p.add_argument("--locale", default="en_US", help="Faker locale for pseudonyms")
+    p.add_argument("--phone-region", default="US", dest="phone_region",
+                   help="Assumed region for national-format phone numbers")
     p.add_argument("--seed", type=int, default=None, help="Deterministic seed")
     p.add_argument("--ner-backend", default=None, dest="ner_backend")
     p.add_argument("--ner-model", default=None, dest="ner_model")
