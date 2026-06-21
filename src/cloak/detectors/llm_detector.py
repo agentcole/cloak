@@ -48,6 +48,7 @@ class LlmDetector(Detector):
         self.endpoint = policy.llm_endpoint.rstrip("/")
         self.model = policy.llm_model
         self.allow_remote = policy.llm_allow_remote
+        self.timeout = policy.llm_timeout
 
     def _is_loopback(self) -> bool:
         host = (urlparse(self.endpoint).hostname or "").lower()
@@ -83,8 +84,9 @@ class LlmDetector(Detector):
                 "temperature": 0,
                 "response_format": {"type": "json_object"},
             }
-            data = httpx.post(url, json=payload, timeout=60.0).json()
-            return data["choices"][0]["message"]["content"]
+            resp = httpx.post(url, json=payload, timeout=self.timeout)
+            resp.raise_for_status()
+            return resp.json()["choices"][0]["message"]["content"]
         # Ollama native
         url = f"{self.endpoint}/api/chat"
         payload = {
@@ -94,8 +96,9 @@ class LlmDetector(Detector):
             "format": "json",
             "options": {"temperature": 0},
         }
-        data = httpx.post(url, json=payload, timeout=60.0).json()
-        return data["message"]["content"]
+        resp = httpx.post(url, json=payload, timeout=self.timeout)
+        resp.raise_for_status()
+        return resp.json()["message"]["content"]
 
     def detect(self, text: str, policy: CloakPolicy) -> list[Entity]:
         if not self.available():
@@ -107,7 +110,7 @@ class LlmDetector(Detector):
             logger.warning("LLM detector call/parse failed: %s", exc)
             return []
 
-        items = parsed.get("entities", []) if isinstance(parsed, dict) else []
+        items = _extract_items(parsed)
         score = max(policy.min_score, 0.9)
         out: list[Entity] = []
         seen: set[tuple[int, int]] = set()
@@ -133,3 +136,21 @@ class LlmDetector(Detector):
                     )
                 )
         return out
+
+
+def _extract_items(parsed: object) -> list:
+    """Pull the entity list out of a model's JSON, tolerating shape drift.
+
+    Accepts ``{"entities": [...]}``, a bare ``[...]``, or a dict whose first
+    list-valued field holds the entities (some models rename the key).
+    """
+    if isinstance(parsed, list):
+        return parsed
+    if isinstance(parsed, dict):
+        entities = parsed.get("entities")
+        if isinstance(entities, list):
+            return entities
+        for value in parsed.values():
+            if isinstance(value, list):
+                return value
+    return []

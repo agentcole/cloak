@@ -17,7 +17,7 @@ Legend: ✅ done · 🚧 in progress · ⬜ planned · ❄️ deferred (out of c
 | A1 | ~~GLiNER default backend never run~~ — **validated**: default `gliner` + `gliner_multi_pii-v1` detects PERSON/ORG/LOCATION end-to-end; opt-in test (`CLOAK_TEST_GLINER=1`). | ✅ |
 | A2 | ~~`[phone]` extra is dead~~ — **fixed**: dedicated `PhoneDetector` uses libphonenumber (validated, locale-aware, 0.95) with a regex fallback (0.6). | ✅ |
 | A3 | ~~`mypy` never run; no `py.typed`~~ — **fixed**: `py.typed` shipped; `mypy` clean on 25 files. | ✅ |
-| A4 | **LLM detector never run against a real model** — Tier-3 request/parse path is import-guarded only. | ⬜ |
+| A4 | ~~LLM detector never run against a real model~~ — **validated** against live Ollama (llama3.1); hardened with configurable timeout, `raise_for_status`, shape-tolerant JSON parsing, and a tested non-loopback refusal. Opt-in live test (`CLOAK_TEST_OLLAMA=1`). | ✅ |
 | A5 | **Thin detection coverage** — missing passports, driver's licenses, non-US national IDs, PHI/medical, postal addresses, dates-in-prose, handles, plates; no locale awareness. | ⬜ |
 | A6 | **Proxy hardening** — Anthropic response shapes, timeouts/retries, sync masking blocks the async loop, Faker not thread-safe under concurrency, vault has no TTL/eviction/persistence. | ⬜ |
 | A7 | **Pseudonym round-trip is best-effort**; double-masking/idempotency undefined. | ⬜ |

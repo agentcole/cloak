@@ -99,6 +99,7 @@ class CloakPolicy:
     llm_endpoint: str = "http://localhost:11434"
     llm_model: str = "llama3.1"
     llm_allow_remote: bool = False
+    llm_timeout: float = 60.0
 
     def strategy_for(self, entity_type: str) -> str:
         """Resolve the strategy name for a given entity type."""
