@@ -79,6 +79,15 @@ def test_recognizes(detect, text, etype, value):
     assert value in found[etype]
 
 
+def test_runtime_built_secrets_recognized(detect):
+    # Built at runtime so no secret-shaped literal is committed to the repo
+    # (push-protection scanners flag even fake SendGrid/Twilio keys).
+    sendgrid = "SG." + "a" * 22 + "." + "b" * 43
+    twilio = "AC" + "0" * 32
+    assert "API_KEY" in detect(f"key {sendgrid} here")
+    assert "API_KEY" in detect(f"sid {twilio} here")
+
+
 def test_private_key_block_detected(detect):
     pem = "-----BEGIN RSA PRIVATE KEY-----\nMIIBdummy\n-----END RSA PRIVATE KEY-----"
     found = detect(f"leaked:\n{pem}\ndone")

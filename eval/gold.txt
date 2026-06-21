@@ -45,8 +45,9 @@ Born on [[DATE|1990-07-15]] in Ohio.
 Meeting moved to [[DATE|01/15/2024]].
 
 # --- secrets (more formats) ---
+# NB: don't commit secret-shaped literals (push-protection scanners flag even
+# fakes). SendGrid/Twilio/etc. are tested with runtime-built values instead.
 Rotate [[API_KEY|sk_live_abcdefghij1234567890]] and [[API_KEY|sk-proj-abcdefghijklmnopqrst]].
-SendGrid [[API_KEY|SG.REDACTED]] leaked.
 
 # --- national / government IDs ---
 India PAN [[NATIONAL_ID|ABCDE1234F]] and codice [[NATIONAL_ID|RSSMRA85T10A562S]].
