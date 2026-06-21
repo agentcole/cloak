@@ -44,6 +44,20 @@ Send to [[CRYPTO_ADDRESS|0x52908400098527886E0F7030069857D2E4169EE7]] now.
 Born on [[DATE|1990-07-15]] in Ohio.
 Meeting moved to [[DATE|01/15/2024]].
 
+# --- secrets (more formats) ---
+Rotate [[API_KEY|sk_live_abcdefghij1234567890]] and [[API_KEY|sk-proj-abcdefghijklmnopqrst]].
+SendGrid [[API_KEY|SG.REDACTED]] leaked.
+
+# --- national / government IDs ---
+India PAN [[NATIONAL_ID|ABCDE1234F]] and codice [[NATIONAL_ID|RSSMRA85T10A562S]].
+Spain DNI [[NATIONAL_ID|12345678Z]], UK NINO [[NATIONAL_ID|AB123456C]].
+Brazil CPF [[NATIONAL_ID|111.444.777-35]], German tax id [[NATIONAL_ID|86095742719]].
+France INSEE [[NATIONAL_ID|184127645108154]], Aadhaar [[NATIONAL_ID|234123456783]].
+EIN [[EIN|12-3456789]] on the W-9; provider NPI [[MEDICAL_ID|1234567893]].
+
+# --- vehicle / geo / postal ---
+VIN [[VIN|1HGBH41JXMN109186]] ships to [[US_ZIP|90210-1234]] near [[GEO_COORDINATE|37.7749, -122.4194]].
+
 # --- mixed ---
 [[EMAIL|cto@acme.com]] called from [[PHONE|+1 212 555 0199]] re card [[CREDIT_CARD|5555555555554444]].
 

@@ -94,7 +94,7 @@ cloak proxy --port 8788 --upstream https://api.openai.com --strategy placeholder
 
 | Tier | Detector | Catches | Cost |
 |------|----------|---------|------|
-| 1 | `regex` (always on) | emails, phones, SSNs, credit cards (Luhn), IBANs (mod-97), IPs/MACs, URLs, API keys & secrets, crypto addresses, numeric dates | free, deterministic |
+| 1 | `regex` (always on) | emails, phones, SSNs, credit cards (Luhn), IBANs (mod-97), IPs/MACs, URLs, **secrets** (private keys/PEM, AWS, GitHub, OpenAI, Stripe, SendGrid, Twilio, Google, Slack, npm, PyPI, JWT), crypto addresses, dates, **national IDs** (US SSN/EIN, UK NINO, Spain DNI, Italy codice, India PAN/Aadhaar, Brazil CPF, Germany Steuer-ID, France INSEE), **NPI**, **VIN**, geo-coordinates, ZIP+4, handles | free, deterministic |
 | 2 | `ner` (`[ner]`) | PERSON, ORGANIZATION, LOCATION, ADDRESS, DATE | local model |
 | 3 | `llm` (`[llm]`) | context-dependent / messy PII | local model, slower |
 

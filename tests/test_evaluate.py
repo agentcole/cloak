@@ -22,6 +22,12 @@ STRUCTURED = {
     "API_KEY",
     "CRYPTO_ADDRESS",
     "DATE",
+    "NATIONAL_ID",
+    "EIN",
+    "MEDICAL_ID",
+    "VIN",
+    "US_ZIP",
+    "GEO_COORDINATE",
 }
 
 
