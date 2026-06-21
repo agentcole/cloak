@@ -184,9 +184,7 @@ class Cloak:
             return block
         return content
 
-    def unmask_messages(
-        self, messages: list[dict[str, Any]], vault: Vault
-    ) -> list[dict[str, Any]]:
+    def unmask_messages(self, messages: list[dict[str, Any]], vault: Vault) -> list[dict[str, Any]]:
         """Restore originals across a list of messages."""
         out = copy.deepcopy(messages)
         for msg in out:

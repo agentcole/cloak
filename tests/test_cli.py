@@ -62,9 +62,10 @@ def test_encrypted_vault_roundtrip(tmp_path, capsys):
     vault = tmp_path / "v.enc"
     pw = "hunter2"
 
-    assert main(
-        ["mask", str(src), "--detectors", "regex", "--vault", str(vault), "--password", pw]
-    ) == 0
+    assert (
+        main(["mask", str(src), "--detectors", "regex", "--vault", str(vault), "--password", pw])
+        == 0
+    )
     masked = capsys.readouterr().out
 
     mfile = tmp_path / "m.txt"

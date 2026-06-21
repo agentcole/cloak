@@ -57,8 +57,13 @@ def _build_server():  # pragma: no cover - thin wiring over the mcp package
         return {
             "count": len(entities),
             "entities": [
-                {"type": e.type, "text": e.text, "start": e.start,
-                 "end": e.end, "score": round(e.score, 3)}
+                {
+                    "type": e.type,
+                    "text": e.text,
+                    "start": e.start,
+                    "end": e.end,
+                    "score": round(e.score, 3),
+                }
                 for e in entities
             ],
         }

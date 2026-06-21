@@ -38,9 +38,7 @@ class Resolver:
         policy = self.policy
         allow = set(policy.allowlist)
 
-        protected: list[tuple[int, int]] = (
-            _code_ranges(text) if policy.skip_code_blocks else []
-        )
+        protected: list[tuple[int, int]] = _code_ranges(text) if policy.skip_code_blocks else []
 
         candidates: list[Entity] = []
         for e in entities:

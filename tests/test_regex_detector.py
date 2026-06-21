@@ -32,8 +32,11 @@ def detect():
         ("visit https://example.com/x?y=1 now", "URL", "https://example.com/x?y=1"),
         ("key sk-ant-abcdefghij0123456789XYZ", "API_KEY", "sk-ant-abcdefghij0123456789XYZ"),
         ("aws AKIAIOSFODNN7EXAMPLE rotated", "API_KEY", "AKIAIOSFODNN7EXAMPLE"),
-        ("eth 0x52908400098527886E0F7030069857D2E4169EE7", "CRYPTO_ADDRESS",
-         "0x52908400098527886E0F7030069857D2E4169EE7"),
+        (
+            "eth 0x52908400098527886E0F7030069857D2E4169EE7",
+            "CRYPTO_ADDRESS",
+            "0x52908400098527886E0F7030069857D2E4169EE7",
+        ),
     ],
 )
 def test_detects_structured(detect, text, etype, value):

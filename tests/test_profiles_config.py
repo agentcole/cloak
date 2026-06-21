@@ -57,7 +57,9 @@ def test_from_mapping_with_profile_base():
 
 def test_from_file_json(tmp_path):
     cfg = tmp_path / "policy.json"
-    cfg.write_text(json.dumps({"profile": "gdpr", "detectors": ["regex"], "strategy": "placeholder"}))
+    cfg.write_text(
+        json.dumps({"profile": "gdpr", "detectors": ["regex"], "strategy": "placeholder"})
+    )
     p = CloakPolicy.from_file(str(cfg))
     assert p.detectors == ["regex"]
     assert p.strategy == "placeholder"

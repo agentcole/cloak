@@ -11,9 +11,7 @@ import time
 
 import pytest
 
-_HAS_PROXY = all(
-    importlib.util.find_spec(m) for m in ("fastapi", "httpx", "uvicorn", "starlette")
-)
+_HAS_PROXY = all(importlib.util.find_spec(m) for m in ("fastapi", "httpx", "uvicorn", "starlette"))
 pytestmark = pytest.mark.skipif(not _HAS_PROXY, reason="proxy extra not installed")
 
 

@@ -62,8 +62,10 @@ def test_detect_locates_spans_from_mocked_response(monkeypatch):
     monkeypatch.setattr(
         det,
         "_call",
-        lambda text: '{"entities":[{"text":"Sarah Chen","type":"PERSON"},'
-        '{"text":"sarah@x.com","type":"EMAIL"}]}',
+        lambda text: (
+            '{"entities":[{"text":"Sarah Chen","type":"PERSON"},'
+            '{"text":"sarah@x.com","type":"EMAIL"}]}'
+        ),
     )
     text = "Email Sarah Chen at sarah@x.com please"
     ents = {(e.type, e.text) for e in det.detect(text, pol)}

@@ -75,10 +75,14 @@ def _policy_from_args(args: argparse.Namespace) -> CloakPolicy:
 
 
 def _add_detector_flags(p: argparse.ArgumentParser) -> None:
-    p.add_argument("--profile", default=None,
-                   help="Compliance preset (gdpr/hipaa/pci/strict/secrets); overrides other flags")
-    p.add_argument("--config", default=None,
-                   help="Policy file (.json/.toml/.yaml); overrides other flags")
+    p.add_argument(
+        "--profile",
+        default=None,
+        help="Compliance preset (gdpr/hipaa/pci/strict/secrets); overrides other flags",
+    )
+    p.add_argument(
+        "--config", default=None, help="Policy file (.json/.toml/.yaml); overrides other flags"
+    )
     p.add_argument("--detectors", default="regex", help="Comma list: regex,ner,llm")
     p.add_argument(
         "--strategy",
@@ -91,8 +95,12 @@ def _add_detector_flags(p: argparse.ArgumentParser) -> None:
     p.add_argument("--deny", default="", help="Literal strings to always mask (comma list)")
     p.add_argument("--no-skip-code", action="store_true", dest="no_skip_code")
     p.add_argument("--locale", default="en_US", help="Faker locale for pseudonyms")
-    p.add_argument("--phone-region", default="US", dest="phone_region",
-                   help="Assumed region for national-format phone numbers")
+    p.add_argument(
+        "--phone-region",
+        default="US",
+        dest="phone_region",
+        help="Assumed region for national-format phone numbers",
+    )
     p.add_argument("--seed", type=int, default=None, help="Deterministic seed")
     p.add_argument("--ner-backend", default=None, dest="ner_backend")
     p.add_argument("--ner-model", default=None, dest="ner_model")
@@ -108,8 +116,14 @@ def cmd_scan(args: argparse.Namespace) -> int:
     cloak = Cloak(_policy_from_args(args))
     entities = cloak.scan(text)
     payload = [
-        {"type": e.type, "text": e.text, "start": e.start, "end": e.end,
-         "score": round(e.score, 3), "source": e.source}
+        {
+            "type": e.type,
+            "text": e.text,
+            "start": e.start,
+            "end": e.end,
+            "score": round(e.score, 3),
+            "source": e.source,
+        }
         for e in entities
     ]
     if args.json:

@@ -121,9 +121,7 @@ PATTERNS: list[PiiPattern] = [
     # --- Dates / birthdays (numeric formats; NER catches written dates) ---
     PiiPattern(
         "DATE",
-        _C(
-            r"\b(?:\d{4}-\d{2}-\d{2}|\d{1,2}[/.\-]\d{1,2}[/.\-]\d{2,4})\b"
-        ),
+        _C(r"\b(?:\d{4}-\d{2}-\d{2}|\d{1,2}[/.\-]\d{1,2}[/.\-]\d{2,4})\b"),
         0.7,  # above PHONE so date-formatted strings win overlap resolution
     ),
 ]

@@ -11,8 +11,17 @@ GOLD = Path(__file__).resolve().parent.parent / "eval" / "gold.txt"
 
 # Structured types the regex tier is responsible for (NER types excluded).
 STRUCTURED = {
-    "EMAIL", "PHONE", "SSN", "CREDIT_CARD", "IBAN",
-    "IP_ADDRESS", "MAC_ADDRESS", "URL", "API_KEY", "CRYPTO_ADDRESS", "DATE",
+    "EMAIL",
+    "PHONE",
+    "SSN",
+    "CREDIT_CARD",
+    "IBAN",
+    "IP_ADDRESS",
+    "MAC_ADDRESS",
+    "URL",
+    "API_KEY",
+    "CRYPTO_ADDRESS",
+    "DATE",
 }
 
 

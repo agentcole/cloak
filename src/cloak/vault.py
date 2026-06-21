@@ -65,8 +65,9 @@ class Vault:
 
         self._token_by_key[key] = token
         self._entries.append(
-            VaultEntry(token=token, original=entity.text, type=entity.type,
-                       reversible=strategy.reversible)
+            VaultEntry(
+                token=token, original=entity.text, type=entity.type, reversible=strategy.reversible
+            )
         )
         if strategy.reversible:
             self._original_by_token[token] = entity.text
