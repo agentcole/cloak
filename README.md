@@ -90,6 +90,16 @@ cloak proxy --port 8788 --upstream https://api.openai.com --strategy placeholder
 # then: OPENAI_BASE_URL=http://127.0.0.1:8788/v1
 ```
 
+### Docker
+
+```bash
+docker build -t cloak .
+docker run -p 8788:8788 -e CLOAK_PROXY_UPSTREAM=https://api.openai.com cloak
+```
+
+Or a fully-local stack (cloak ↔ Ollama) with `docker compose up --build` — see
+[`docker-compose.yml`](docker-compose.yml).
+
 ## Detection tiers
 
 | Tier | Detector | Catches | Cost |

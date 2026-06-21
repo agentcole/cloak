@@ -1,0 +1,27 @@
+# cloak proxy in front of a local Ollama — a fully local, private LLM stack.
+#
+#   docker compose up --build
+#   # then point your OpenAI-compatible client at http://localhost:8788/v1
+#
+# Your app  ->  cloak (masks PII)  ->  ollama (the model)  ->  cloak (restores)  ->  your app
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+
+  cloak:
+    build: .
+    ports:
+      - "8788:8788"
+    environment:
+      CLOAK_PROXY_UPSTREAM: http://ollama:11434
+      CLOAK_PROXY_DETECTORS: regex
+      CLOAK_PROXY_STRATEGY: placeholder
+    depends_on:
+      - ollama
+
+volumes:
+  ollama:
