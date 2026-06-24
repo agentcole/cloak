@@ -21,6 +21,7 @@ redact / hash) → reversible Vault → restore on the response.
 ## Examples
 
 - [examples/quickstart.py](examples/quickstart.py): mask → restore round trip (offline)
+- [examples/mask_document.py](examples/mask_document.py): scan/mask/redact a whole document (offline synthetic; real files need [docling])
 - [examples/strategies_and_profiles.py](examples/strategies_and_profiles.py): strategies + profiles
 - [examples/wrap_openai.py](examples/wrap_openai.py): wrap the OpenAI SDK (local Ollama by default)
 - [examples/proxy_quickstart.md](examples/proxy_quickstart.md): run the reverse proxy
@@ -32,6 +33,7 @@ redact / hash) → reversible Vault → restore on the response.
 - `src/cloak/policy.py`: CloakPolicy + from_profile/from_file/from_env
 - `src/cloak/patterns.py`, `src/cloak/validators.py`: regex recognizers + checksums
 - `src/cloak/detectors/`: regex, phone, ner (gliner/spacy), llm (ollama)
+- `src/cloak/documents/`: whole-document parse (docling) → scan/mask/redact → md/json (PDF/DOCX planned)
 - `src/cloak/strategies/`: placeholder, pseudonym, redact, hash
 - `src/cloak/vault.py`: original↔token map, restore, encrypted persistence
 - `src/cloak/evaluate.py` + `eval/gold.txt`: precision/recall harness

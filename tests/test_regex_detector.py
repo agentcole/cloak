@@ -55,6 +55,12 @@ def test_iban_mod97(detect):
     assert "IBAN" not in detect("acct GB00WEST12345698765432")  # invalid checksum
 
 
+def test_iban_space_grouped(detect):
+    # Printed IBANs are grouped in fours; the whole span must be captured.
+    found = detect("IBAN (Test): DE89 3704 0044 0532 0130 00 thanks")
+    assert "DE89 3704 0044 0532 0130 00" in found.get("IBAN", [])
+
+
 def test_regex_detector_does_not_emit_phone(detect):
     # Phone detection moved to PhoneDetector; RegexDetector should not emit it.
     assert "PHONE" not in detect("call 415-555-0123")

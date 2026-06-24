@@ -60,6 +60,14 @@ config = [
     "pyyaml>=6.0",
     "tomli>=2.0; python_version<'3.11'",
 ]
+# Whole-document parsing/masking (PDF/DOCX/PPTX/HTML/images) + redaction.
+# Heaviest extra: docling pulls torch + layout/OCR models. PyMuPDF is AGPL-3.0
+# (cloak itself stays Apache-2.0 — see docs/documents-plan.md license note).
+docling = [
+    "docling>=2.0.0",
+    "pymupdf>=1.24.0",
+    "python-docx>=1.1.0",
+]
 all = [
     "gliner>=0.2.0",
     "onnxruntime>=1.16.0",

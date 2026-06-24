@@ -1,0 +1,195 @@
+## Kundenkartei - Musterdaten
+
+Hinweis: Sämtliche Namen, Adressen, Telefonnummern, E-Mail-Adressen und sonstigen Angaben sind frei erfunden. Jede Ähnlichkeit mit real existierenden Personen ist rein zufällig. Dieses Dokument dient ausschließlich zu Test- und Demonstrationszwecken (Anonymisierung, Formularverarbeitung, Datenmigration).
+
+Die folgende Kundenkartei enthält Beispieldatensätze für die interne Qualitätssicherung. Sie wurde am [DATE] generiert und umfasst zehn fiktive Kontakte mit vollständigen Stammdaten. Bitte verarbeiten Sie die Daten ausschließlich in der Testumgebung.
+
+## 1. Annika Brandt
+
+| Anschrift          | Lindenstraße 14, 80335 München   |
+|--------------------|----------------------------------|
+| Telefon (Festnetz) | [PHONE]                          |
+| Telefon (Mobil)    | [PHONE]                          |
+| E-Mail             | [EMAIL]                          |
+| Geburtsdatum       | [DATE]                           |
+| Kundennummer       | KD-100234                        |
+| IBAN (Test)        | [IBAN]                           |
+
+## 2. Tobias Hofmann
+
+| Anschrift          | Gartenweg 7, 20144 Hamburg   |
+|--------------------|------------------------------|
+| Telefon (Festnetz) | [PHONE]                      |
+| Telefon (Mobil)    | [PHONE]                      |
+| E-Mail             | [EMAIL]                      |
+| Geburtsdatum       | [DATE]                       |
+| Kundennummer       | KD-100235                    |
+| IBAN (Test)        | [IBAN]                       |
+
+## 3. Sabine Wagner
+
+| Anschrift          | Am Marktplatz 22, 50667 Köln   |
+|--------------------|--------------------------------|
+| Telefon (Festnetz) | [PHONE]                        |
+| Telefon (Mobil)    | [PHONE]                        |
+| E-Mail             | [EMAIL]                        |
+| Geburtsdatum       | [DATE]                         |
+| Kundennummer       | KD-100236                      |
+| IBAN (Test)        | [IBAN]                         |
+
+## 4. Markus Schneider
+
+| Anschrift          | Rosenheimer Str. 103, 81669 München   |
+|--------------------|---------------------------------------|
+| Telefon (Festnetz) | [PHONE]                               |
+| Telefon (Mobil)    | [PHONE]                               |
+| E-Mail             | [EMAIL]                               |
+| Geburtsdatum       | [DATE]                                |
+| Kundennummer       | KD-100237                             |
+| IBAN (Test)        | DE21 [NATIONAL_ID] 4567 89            |
+
+## 5. Julia Becker
+
+Anschrift
+
+Telefon (Festnetz)
+
+Telefon (Mobil)
+
+E-Mail
+
+Geburtsdatum
+
+Kundennummer
+
+IBAN (Test)
+
+## 6. Florian Keller
+
+| Anschrift          | Bahnhofstraße 9, 04109 Leipzig   |
+|--------------------|----------------------------------|
+| Telefon (Festnetz) | [PHONE]                          |
+| Telefon (Mobil)    | [PHONE]                          |
+| E-Mail             | [EMAIL]                          |
+| Geburtsdatum       | [DATE]                           |
+| Kundennummer       | KD-100239                        |
+| IBAN (Test)        | DE78 8607 0024 0123 4567 00      |
+
+## 7. Nadine Richter
+
+Anschrift
+
+Telefon (Festnetz)
+
+Telefon (Mobil)
+
+E-Mail
+
+Geburtsdatum
+
+Kundennummer
+
+IBAN (Test)
+
+## 8. Stefan Lehmann
+
+Anschrift
+
+Telefon (Festnetz)
+
+Telefon (Mobil)
+
+E-Mail
+
+Geburtsdatum
+
+Kundennummer
+
+IBAN (Test)
+
+## 9. Katrin Vogel
+
+Anschrift
+
+Telefon (Festnetz)
+
+Telefon (Mobil)
+
+E-Mail
+
+Geburtsdatum
+
+Kundennummer
+
+IBAN (Test)
+
+Hauptstraße 56, 70173 Stuttgart
+
+[PHONE]
+
+[PHONE]
+
+[EMAIL]
+
+[DATE]
+
+KD-100238
+
+DE36 [CREDIT_CARD]
+
+Schillerstraße 31, 60313 Frankfurt am Main
+
+[PHONE]
+
+[PHONE]
+
+[EMAIL]
+
+[DATE]
+
+KD-100240
+
+DE05 5005 0201 0000 0021 23
+
+Goethestraße 48, 01067 Dresden
+
+[PHONE]
+
+[PHONE]
+
+[EMAIL]
+
+[DATE]
+
+KD-100241
+
+DE17 8505 0300 0001 2345 67
+
+Mozartweg 5, 90402 Nürnberg
+
+[PHONE]
+
+[PHONE]
+
+[EMAIL]
+
+[DATE]
+
+KD-100242
+
+DE63 7605 0101 0001 2345 67
+
+## 10. Daniel Frank
+
+| Anschrift          | Kirchgasse 18, 55116 Mainz   |
+|--------------------|------------------------------|
+| Telefon (Festnetz) | [PHONE]                      |
+| Telefon (Mobil)    | [PHONE]                      |
+| E-Mail             | [EMAIL]                      |
+| Geburtsdatum       | [DATE]                       |
+| Kundennummer       | KD-100243                    |
+| IBAN (Test)        | DE49 5505 0120 0200 3456 78  |
+
+Zusammenfassung: Die Kartei umfasst 10 fiktive Datensätze mit jeweils Name, Postanschrift, zwei Telefonnummern, E-Mail-Adresse, Geburtsdatum, Kundennummer und einer Test-IBAN. Alle Werte sind synthetisch und dürfen nicht in Produktivsystemen verwendet werden.
+
+Erstellt am [DATE] - Version 1.0 - Vertraulich (Testdaten)

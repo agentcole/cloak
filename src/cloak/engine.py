@@ -185,6 +185,38 @@ class Cloak:
             return block
         return content
 
+    # -- masking: documents ----------------------------------------------
+
+    def scan_document(self, source: Any, *, ocr: bool = False) -> list[Any]:
+        """Detect PII across a document, tagged with page/bbox provenance.
+
+        ``source`` is a file path (parsed via the optional ``[docling]`` extra)
+        or an already-parsed ``SegmentedDoc``. Returns ``DocEntity`` objects.
+        """
+        from .documents import scan_document as _scan_document
+
+        return _scan_document(self._as_segmented(source, ocr=ocr), self)
+
+    def mask_document(self, source: Any, *, ocr: bool = False, mode: str = "mask") -> Any:
+        """Mask (reversible) or redact (one-way) a whole document.
+
+        ``source`` is a file path or a ``SegmentedDoc``. Returns a
+        ``DocumentResult`` whose ``.to_markdown()`` / ``.to_json()`` render the
+        masked content and whose ``.vault`` restores an LLM answer's *text*.
+        """
+        from .documents import mask_document as _mask_document
+
+        return _mask_document(self._as_segmented(source, ocr=ocr), self, mode=mode)
+
+    @staticmethod
+    def _as_segmented(source: Any, *, ocr: bool) -> Any:
+        from .documents import SegmentedDoc
+        from .documents.parser import get_parser
+
+        if isinstance(source, SegmentedDoc):
+            return source
+        return get_parser().parse(source, ocr=ocr)
+
     def unmask_messages(self, messages: list[dict[str, Any]], vault: Vault) -> list[dict[str, Any]]:
         """Restore originals across a list of messages."""
         out = copy.deepcopy(messages)

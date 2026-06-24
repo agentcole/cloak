@@ -113,8 +113,11 @@ PATTERNS: list[PiiPattern] = [
         validator=luhn_valid,
     ),
     PiiPattern(
+        # Tolerate the space/hyphen group separators used in printed IBANs
+        # (e.g. "DE89 3704 0044 0532 0130 00"); iban_valid strips them and the
+        # mod-97 checksum filters any over-broad match.
         "IBAN",
-        _C(r"\b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b"),
+        _C(r"\b[A-Z]{2}\d{2}(?:[ -]?[A-Z0-9]){11,30}\b"),
         0.95,
         validator=iban_valid,
     ),

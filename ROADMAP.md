@@ -35,6 +35,7 @@ Legend: ✅ done · 🚧 in progress · ⬜ planned · ❄️ deferred (out of c
 | B6 | ~~CI~~ — **done**: `ci.yml` runs ruff check/format + mypy + pytest on Python 3.10–3.13 and builds the wheel; `publish.yml` does PyPI Trusted Publishing on version tags. | ✅ |
 | B7 | ~~Docs~~ — **done**: `docs/architecture.md`, `docs/policy.md` (field/profile/type reference), `docs/threat-model.md`, and `llms.txt`. | ✅ |
 | B8 | **Project hygiene** — **mostly done**: CHANGELOG, CONTRIBUTING, SECURITY.md added; identity = symbolicinterfaces.com. (Full Apache LICENSE body still the short reference form.) | 🚧 |
+| B9 | **Document support (docling)** — **in progress**: library `scan_document`/`mask_document` with shared-vault coreference, reversible `mask` vs one-way `redact`, table-cell-aware parsing, markdown/JSON renderers, and **in-place PDF redaction** (PyMuPDF `apply_redactions` — glyphs removed, metadata scrubbed). Validated end-to-end on a real 3-page PDF (`examples/data/kundenkartei.pdf`). Optional `[docling]` extra, lazy-imported (core stays zero-dep). Remaining: DOCX render, OCR validation (RapidOCR model issue in some envs), CLI/MCP/proxy wiring. Plan: `docs/documents-plan.md`. | 🚧 |
 
 ## C. Explicitly deferred (parity with headroom, not pursued now)
 
@@ -49,6 +50,11 @@ A1–A6 (all shipped defects, proxy hardening, detection breadth); B1–B7 (eval
 profiles, config, examples, Docker, CI, docs); B8 hygiene + identity.
 
 ## Next up
-The in-scope roadmap is complete. Optional future tail: passports / driver's
-licenses (need contextual cues to stay precise), non-US postal-address formats,
-and more phone/ID locales. Deferred by decision: C1–C3.
+**B9 — document support (docling):** the next pillar. Whole-document parse →
+scan / reversible mask / one-way redact, with markdown/JSON/PDF/DOCX output and
+optional OCR, behind an optional `[docling]` extra. See `docs/documents-plan.md`
+for the full design and build order.
+
+Optional future tail: passports / driver's licenses (need contextual cues to
+stay precise), non-US postal-address formats, and more phone/ID locales.
+Deferred by decision: C1–C3.
