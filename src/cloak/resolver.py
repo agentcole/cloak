@@ -52,6 +52,12 @@ class Resolver:
                 continue
             candidates.append(e)
 
+        # Drop any span strictly contained in another: the larger span masks the
+        # same text, so a contained sub-match is redundant and — if a confident
+        # short span (e.g. a city LOCATION inside a full ADDRESS) beat its
+        # container on score below — would otherwise leak the container's tail.
+        candidates = self._drop_contained(candidates)
+
         # Highest confidence first, then longest; greedily drop overlaps.
         accepted: list[Entity] = []
         for e in sorted(candidates, key=lambda x: (x.score, len(x)), reverse=True):
@@ -61,3 +67,24 @@ class Resolver:
 
         accepted.sort(key=lambda x: x.start)
         return accepted
+
+    @staticmethod
+    def _drop_contained(candidates: list[Entity]) -> list[Entity]:
+        """Remove spans strictly contained within a larger candidate span.
+
+        ``A`` strictly contains ``B`` when ``A`` covers all of ``B`` and is
+        wider on at least one side. Equal spans (same offsets, different type)
+        are kept here and decided by score in the greedy pass.
+        """
+        kept: list[Entity] = []
+        for b in candidates:
+            contained = any(
+                a is not b
+                and a.start <= b.start
+                and b.end <= a.end
+                and (a.start < b.start or b.end < a.end)
+                for a in candidates
+            )
+            if not contained:
+                kept.append(b)
+        return kept

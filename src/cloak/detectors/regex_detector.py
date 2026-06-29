@@ -6,7 +6,12 @@ IBANs, IPs/MACs, URLs, crypto addresses, secrets/API keys and numeric dates.
 
 from __future__ import annotations
 
-from ..patterns import PATTERNS, PiiPattern
+from ..patterns import (
+    IBAN_FRAGMENT_TYPES,
+    PATTERNS,
+    PiiPattern,
+    iban_structural_spans,
+)
 from ..policy import CloakPolicy
 from ..types import Entity
 from .base import Detector
@@ -53,4 +58,25 @@ class RegexDetector(Detector):
                         source=self.name,
                     )
                 )
-        return entities
+        return self._suppress_iban_fragments(entities, text)
+
+    @staticmethod
+    def _suppress_iban_fragments(entities: list[Entity], text: str) -> list[Entity]:
+        """Drop fragmenting numeric matches that sit inside an IBAN-shaped run.
+
+        A checksum-invalid IBAN emits no IBAN token, but an interior Luhn or
+        tax-id run would otherwise survive and half-mask the field (leaking the
+        rest of the account number). Suppress those fragments so the IBAN is
+        either fully tokenized or left wholly intact — never partially masked.
+        """
+        zones = iban_structural_spans(text)
+        if not zones:
+            return entities
+        return [
+            e
+            for e in entities
+            if not (
+                e.type in IBAN_FRAGMENT_TYPES
+                and any(zs <= e.start and e.end <= ze for zs, ze in zones)
+            )
+        ]

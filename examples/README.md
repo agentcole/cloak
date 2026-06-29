@@ -41,3 +41,15 @@ That writes two artifacts next to the input (checked in for reference):
   removed (not just covered) via PyMuPDF `apply_redactions`, and metadata is scrubbed
 
 `data/kundenkartei.pdf` is synthetic German customer data (all values fabricated).
+
+For real files the example enables the local **NER** tier (`[ner]`) on top of regex
+so person **names** and **addresses** are caught, not just structured PII
+(emails/IBANs/phones/dates). Install both extras to reproduce the checked-in
+artifacts: `pip install "cloak-llm[docling,ner]"`. Notes on what you'll see:
+
+- **IBANs** are mod-97 validated. A checksum-invalid (test/typo'd) IBAN is left
+  **wholly intact** rather than half-masked — cloak suppresses the interior
+  digit-runs that would otherwise spuriously match a credit card or tax id.
+- The NER tier is a small zero-shot model; it occasionally over-redacts generic
+  prose (safe-side for redaction) and a business-specific id like `KD-100234`
+  isn't a standard PII type, so it's left as-is.

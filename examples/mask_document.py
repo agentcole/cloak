@@ -35,10 +35,15 @@ def _synthetic_doc() -> SegmentedDoc:
 
 
 def main() -> None:
-    cloak = Cloak(CloakPolicy(detectors=["regex"], strategy="placeholder"))
-
     # Parse a real document if given a path; otherwise use the offline demo doc.
     source = sys.argv[1] if len(sys.argv) > 1 else _synthetic_doc()
+
+    # Structured PII (emails, IBANs, phones, dates) is caught by the zero-dep
+    # regex tier. Names and addresses need the local NER tier — enable it for
+    # real files (install with `[ner]`; it degrades gracefully if absent). The
+    # offline synthetic demo stays regex-only so it needs no model.
+    detectors = ["regex", "ner"] if isinstance(source, str) else ["regex"]
+    cloak = Cloak(CloakPolicy(detectors=detectors, strategy="placeholder"))
 
     # 1) Detect-and-report: where is the PII?
     print("=== scan ===")

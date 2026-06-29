@@ -73,6 +73,26 @@ class PiiPattern:
 
 _C = re.compile
 
+# An IBAN's structural shape: country code + 2 check digits + 11–30 grouped
+# alphanumerics (printed IBANs use space/hyphen group separators). The IBAN
+# *pattern* below gates this on the mod-97 checksum; this raw shape is reused as
+# an exclusion zone (see ``IBAN_FRAGMENT_TYPES``) so a checksum-invalid IBAN is
+# never half-masked by an interior numeric run.
+_IBAN_RE = _C(r"\b[A-Z]{2}\d{2}(?:[ -]?[A-Z0-9]){11,30}\b")
+
+# When an IBAN fails its checksum it emits no token, but an interior 16-digit
+# Luhn run (CREDIT_CARD) or 11-digit run (German tax id, NATIONAL_ID) can still
+# match and produce a misleading "DE21 [NATIONAL_ID] 4567 89" that leaks the
+# rest of the account number. Drop these fragmenting numeric types when they sit
+# wholly inside an IBAN-shaped run.
+IBAN_FRAGMENT_TYPES: frozenset[str] = frozenset({"CREDIT_CARD", "NATIONAL_ID", "MEDICAL_ID"})
+
+
+def iban_structural_spans(text: str) -> list[tuple[int, int]]:
+    """Char spans of every structurally IBAN-shaped run (checksum-agnostic)."""
+    return [m.span() for m in _IBAN_RE.finditer(text)]
+
+
 # Order matters: more specific / higher-value patterns first so the resolver
 # prefers them when spans overlap.
 PATTERNS: list[PiiPattern] = [
@@ -115,9 +135,10 @@ PATTERNS: list[PiiPattern] = [
     PiiPattern(
         # Tolerate the space/hyphen group separators used in printed IBANs
         # (e.g. "DE89 3704 0044 0532 0130 00"); iban_valid strips them and the
-        # mod-97 checksum filters any over-broad match.
+        # mod-97 checksum filters any over-broad match. The shared ``_IBAN_RE``
+        # also seeds the fragment-suppression zone (see IBAN_FRAGMENT_TYPES).
         "IBAN",
-        _C(r"\b[A-Z]{2}\d{2}(?:[ -]?[A-Z0-9]){11,30}\b"),
+        _IBAN_RE,
         0.95,
         validator=iban_valid,
     ),
@@ -188,6 +209,17 @@ PATTERNS: list[PiiPattern] = [
             r"\b\d{1,6}\s+(?:[A-Z][a-zA-Z]*\.?\s+){1,4}"
             r"(?:Street|St|Avenue|Ave|Boulevard|Blvd|Road|Rd|Drive|Dr|Lane|Ln|Way|"
             r"Court|Ct|Place|Pl|Terrace|Ter|Circle|Cir|Parkway|Pkwy)\b\.?"
+        ),
+        0.6,
+    ),
+    # --- Street address (German: "<street> <no.>, <5-digit PLZ> <City>") ---
+    # Anchored on the house-number + postal-code + city tail (the reliable
+    # signal); the US pattern above only knows English street suffixes.
+    PiiPattern(
+        "ADDRESS",
+        _C(
+            r"\b[A-ZÄÖÜ][A-Za-zÄÖÜäöüß.]+(?:\s+[A-ZÄÖÜ][A-Za-zÄÖÜäöüß.]+){0,2}\s+\d{1,4}[a-z]?,"
+            r"\s*\d{5}\s+[A-ZÄÖÜ][A-Za-zÄÖÜäöüß]+(?:\s+(?:am|an|der|ob|im|auf|[A-ZÄÖÜ][A-Za-zÄÖÜäöüß]+)){0,2}"
         ),
         0.6,
     ),

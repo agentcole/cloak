@@ -1,81 +1,54 @@
 ## Kundenkartei - Musterdaten
 
-Hinweis: Sämtliche Namen, Adressen, Telefonnummern, E-Mail-Adressen und sonstigen Angaben sind frei erfunden. Jede Ähnlichkeit mit real existierenden Personen ist rein zufällig. Dieses Dokument dient ausschließlich zu Test- und Demonstrationszwecken (Anonymisierung, Formularverarbeitung, Datenmigration).
+Hinweis: Sämtliche Namen, [ADDRESS], Telefonnummern, E-Mail-Adressen und sonstigen Angaben sind frei erfunden. Jede Ähnlichkeit mit real existierenden Personen ist rein zufällig. Dieses Dokument dient ausschließlich zu Test- und Demonstrationszwecken (Anonymisierung, Formularverarbeitung, Datenmigration).
 
-Die folgende Kundenkartei enthält Beispieldatensätze für die interne Qualitätssicherung. Sie wurde am [DATE] generiert und umfasst zehn fiktive Kontakte mit vollständigen Stammdaten. Bitte verarbeiten Sie die Daten ausschließlich in der Testumgebung.
+Die folgende [ORGANIZATION] enthält Beispieldatensätze für die interne Qualitätssicherung. Sie wurde am [DATE] generiert und umfasst [PERSON] mit vollständigen Stammdaten. Bitte verarbeiten Sie die Daten ausschließlich in der [LOCATION].
 
-## 1. Annika Brandt
+## 1. [PERSON]
 
-| Anschrift          | Lindenstraße 14, 80335 München   |
-|--------------------|----------------------------------|
-| Telefon (Festnetz) | [PHONE]                          |
-| Telefon (Mobil)    | [PHONE]                          |
-| E-Mail             | [EMAIL]                          |
-| Geburtsdatum       | [DATE]                           |
-| Kundennummer       | KD-100234                        |
-| IBAN (Test)        | [IBAN]                           |
+| Anschrift          | [ADDRESS]   |
+|--------------------|-------------|
+| Telefon (Festnetz) | [PHONE]     |
+| Telefon (Mobil)    | [PHONE]     |
+| E-Mail             | [EMAIL]     |
+| Geburtsdatum       | [DATE]      |
+| Kundennummer       | KD-100234   |
+| IBAN (Test)        | [IBAN]      |
 
-## 2. Tobias Hofmann
+## 2. [PERSON]
 
-| Anschrift          | Gartenweg 7, 20144 Hamburg   |
-|--------------------|------------------------------|
-| Telefon (Festnetz) | [PHONE]                      |
-| Telefon (Mobil)    | [PHONE]                      |
-| E-Mail             | [EMAIL]                      |
-| Geburtsdatum       | [DATE]                       |
-| Kundennummer       | KD-100235                    |
-| IBAN (Test)        | [IBAN]                       |
+| Anschrift          | [ADDRESS]   |
+|--------------------|-------------|
+| Telefon (Festnetz) | [PHONE]     |
+| Telefon (Mobil)    | [PHONE]     |
+| E-Mail             | [EMAIL]     |
+| Geburtsdatum       | [DATE]      |
+| Kundennummer       | KD-100235   |
+| IBAN (Test)        | [IBAN]      |
 
-## 3. Sabine Wagner
+## 3. [PERSON]
 
-| Anschrift          | Am Marktplatz 22, 50667 Köln   |
-|--------------------|--------------------------------|
-| Telefon (Festnetz) | [PHONE]                        |
-| Telefon (Mobil)    | [PHONE]                        |
-| E-Mail             | [EMAIL]                        |
-| Geburtsdatum       | [DATE]                         |
-| Kundennummer       | KD-100236                      |
-| IBAN (Test)        | [IBAN]                         |
+| Anschrift          | [ADDRESS]   |
+|--------------------|-------------|
+| Telefon (Festnetz) | [PHONE]     |
+| Telefon (Mobil)    | [PHONE]     |
+| E-Mail             | [EMAIL]     |
+| Geburtsdatum       | [DATE]      |
+| Kundennummer       | KD-100236   |
+| IBAN (Test)        | [IBAN]      |
 
-## 4. Markus Schneider
+## 4. [PERSON]
 
-| Anschrift          | Rosenheimer Str. 103, 81669 München   |
-|--------------------|---------------------------------------|
-| Telefon (Festnetz) | [PHONE]                               |
-| Telefon (Mobil)    | [PHONE]                               |
-| E-Mail             | [EMAIL]                               |
-| Geburtsdatum       | [DATE]                                |
-| Kundennummer       | KD-100237                             |
-| IBAN (Test)        | DE21 [NATIONAL_ID] 4567 89            |
+| Anschrift          | [ADDRESS]                   |
+|--------------------|-----------------------------|
+| Telefon (Festnetz) | [PHONE]                     |
+| Telefon (Mobil)    | [PHONE]                     |
+| E-Mail             | [EMAIL]                     |
+| Geburtsdatum       | [DATE]                      |
+| Kundennummer       | KD-100237                   |
+| IBAN (Test)        | DE21 3007 0010 0123 4567 89 |
 
-## 5. Julia Becker
-
-Anschrift
-
-Telefon (Festnetz)
-
-Telefon (Mobil)
-
-E-Mail
-
-Geburtsdatum
-
-Kundennummer
-
-IBAN (Test)
-
-## 6. Florian Keller
-
-| Anschrift          | Bahnhofstraße 9, 04109 Leipzig   |
-|--------------------|----------------------------------|
-| Telefon (Festnetz) | [PHONE]                          |
-| Telefon (Mobil)    | [PHONE]                          |
-| E-Mail             | [EMAIL]                          |
-| Geburtsdatum       | [DATE]                           |
-| Kundennummer       | KD-100239                        |
-| IBAN (Test)        | DE78 8607 0024 0123 4567 00      |
-
-## 7. Nadine Richter
+## 5. [PERSON]
 
 Anschrift
 
@@ -91,7 +64,18 @@ Kundennummer
 
 IBAN (Test)
 
-## 8. Stefan Lehmann
+## 6. [PERSON]
+
+| Anschrift          | [ADDRESS]                   |
+|--------------------|-----------------------------|
+| Telefon (Festnetz) | [PHONE]                     |
+| Telefon (Mobil)    | [PHONE]                     |
+| E-Mail             | [EMAIL]                     |
+| Geburtsdatum       | [DATE]                      |
+| Kundennummer       | KD-100239                   |
+| IBAN (Test)        | DE78 8607 0024 0123 4567 00 |
+
+## 7. [PERSON]
 
 Anschrift
 
@@ -107,7 +91,7 @@ Kundennummer
 
 IBAN (Test)
 
-## 9. Katrin Vogel
+## 8. [PERSON]
 
 Anschrift
 
@@ -123,7 +107,23 @@ Kundennummer
 
 IBAN (Test)
 
-Hauptstraße 56, 70173 Stuttgart
+## 9. [PERSON]
+
+Anschrift
+
+Telefon (Festnetz)
+
+Telefon (Mobil)
+
+E-Mail
+
+Geburtsdatum
+
+Kundennummer
+
+IBAN (Test)
+
+[ADDRESS]
 
 [PHONE]
 
@@ -135,9 +135,9 @@ Hauptstraße 56, 70173 Stuttgart
 
 KD-100238
 
-DE36 [CREDIT_CARD]
+DE36 2004 1133 0473 0420 00
 
-Schillerstraße 31, 60313 Frankfurt am Main
+[ADDRESS]
 
 [PHONE]
 
@@ -151,7 +151,7 @@ KD-100240
 
 DE05 5005 0201 0000 0021 23
 
-Goethestraße 48, 01067 Dresden
+[ADDRESS]
 
 [PHONE]
 
@@ -165,7 +165,7 @@ KD-100241
 
 DE17 8505 0300 0001 2345 67
 
-Mozartweg 5, 90402 Nürnberg
+[ADDRESS]
 
 [PHONE]
 
@@ -179,17 +179,17 @@ KD-100242
 
 DE63 7605 0101 0001 2345 67
 
-## 10. Daniel Frank
+## 10. [PERSON]
 
-| Anschrift          | Kirchgasse 18, 55116 Mainz   |
-|--------------------|------------------------------|
-| Telefon (Festnetz) | [PHONE]                      |
-| Telefon (Mobil)    | [PHONE]                      |
-| E-Mail             | [EMAIL]                      |
-| Geburtsdatum       | [DATE]                       |
-| Kundennummer       | KD-100243                    |
-| IBAN (Test)        | DE49 5505 0120 0200 3456 78  |
+| Anschrift          | [ADDRESS]                   |
+|--------------------|-----------------------------|
+| Telefon (Festnetz) | [PHONE]                     |
+| Telefon (Mobil)    | [PHONE]                     |
+| E-Mail             | [EMAIL]                     |
+| Geburtsdatum       | [DATE]                      |
+| Kundennummer       | KD-100243                   |
+| IBAN (Test)        | DE49 5505 0120 0200 3456 78 |
 
-Zusammenfassung: Die Kartei umfasst 10 fiktive Datensätze mit jeweils Name, Postanschrift, zwei Telefonnummern, E-Mail-Adresse, Geburtsdatum, Kundennummer und einer Test-IBAN. Alle Werte sind synthetisch und dürfen nicht in Produktivsystemen verwendet werden.
+Zusammenfassung: Die Kartei umfasst 10 fiktive Datensätze mit jeweils [PERSON], [ADDRESS], zwei Telefonnummern, E-Mail-Adresse, [DATE], Kundennummer und einer Test-IBAN. Alle Werte sind synthetisch und dürfen nicht in Produktivsystemen verwendet werden.
 
 Erstellt am [DATE] - Version 1.0 - Vertraulich (Testdaten)
