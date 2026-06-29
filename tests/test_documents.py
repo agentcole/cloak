@@ -90,10 +90,19 @@ def test_mask_document_does_not_mutate_input_segments():
 def test_redact_mode_is_irreversible():
     res = mask_document(_doc(), _engine(), mode="redact")
     joined = " ".join(s.text for s in res.doc.segments)
-    assert "[EMAIL]" in joined and "jane@acme.com" not in joined
-    # Nothing reversible stored -> restoring the token is a no-op.
-    assert res.vault.restore("[EMAIL]") == "[EMAIL]"
+    # Numbered redaction: coreferent mentions are visibly linked, but nothing
+    # reversible is stored, so restoring a token is a no-op.
+    assert "[EMAIL_1]" in joined and "jane@acme.com" not in joined
+    assert res.vault.restore("[EMAIL_1]") == "[EMAIL_1]"
     assert res.mode == "redact"
+
+
+def test_redact_mode_coreference_shares_one_token():
+    # The same email on both pages must redact to the SAME numbered token.
+    res = mask_document(_doc(), _engine(), mode="redact")
+    seg1 = next(s for s in res.doc.segments if s.order == 1)
+    seg2 = next(s for s in res.doc.segments if s.order == 2)
+    assert "[EMAIL_1]" in seg1.text and "[EMAIL_1]" in seg2.text
 
 
 def test_invalid_mode_rejected():

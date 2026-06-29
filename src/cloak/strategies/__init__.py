@@ -33,7 +33,7 @@ def build_strategy(name: str, policy: CloakPolicy) -> Strategy:
     if name == STRATEGY_HASH:
         return HashStrategy()
     if name == STRATEGY_REDACT:
-        return RedactStrategy()
+        return RedactStrategy(numbered=policy.redact_numbered)
     if name == STRATEGY_PSEUDONYM:
         return PseudonymStrategy(locale=policy.locale)
     raise ValueError(f"Unknown replacement strategy: {name!r}")

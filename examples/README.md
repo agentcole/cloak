@@ -36,11 +36,20 @@ python examples/mask_document.py examples/data/kundenkartei.pdf
 
 That writes two artifacts next to the input (checked in for reference):
 
-- `data/kundenkartei.redacted.txt` — masked markdown (tables preserved, `[TYPE]` tokens)
+- `data/kundenkartei.redacted.txt` — masked markdown (tables preserved, `[TYPE_N]` tokens)
 - `data/kundenkartei.redacted.pdf` — a true in-place redacted PDF: PII glyphs are
   removed (not just covered) via PyMuPDF `apply_redactions`, and metadata is scrubbed
 
 `data/kundenkartei.pdf` is synthetic German customer data (all values fabricated).
+
+Tokens are **numbered and coreferent** (`[PERSON_1]`, `[ADDRESS_1]`, …): the same
+entity gets the same number everywhere in the document, and distinct entities get
+distinct numbers — so a model (or a reader) can tell them apart and refer back to
+them. Coreference is fuzzy for name-like types, so `Jane Doe`, `Jane`, and
+`Ms. Doe` collapse to one `[PERSON_1]`; structured PII (emails, IBANs) only merges
+on an exact value match. Reversible `mask` restores a token to the entity's
+fullest mentioned form; one-way `redact` keeps the numbering but stores nothing
+recoverable. (Disable with `CloakPolicy(coref=False)`.)
 
 For real files the example enables the local **NER** tier (`[ner]`) on top of regex
 so person **names** and **addresses** are caught, not just structured PII

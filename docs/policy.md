@@ -23,6 +23,8 @@ CloakPolicy.from_env()                           # CLOAK_* env vars
 | `detectors` | `["regex","ner"]` | Tiers to run: `regex`, `phone`, `ner`, `llm`. (`regex` also runs phone.) |
 | `strategy` | `"placeholder"` | Global replacement: `placeholder`/`pseudonym`/`redact`/`hash`. |
 | `strategy_by_type` | `{}` | Per-type overrides, e.g. `{"PERSON":"pseudonym"}`. |
+| `coref` | `True` | Group variant mentions of one entity into a shared numbered token (`Jane Doe`/`Jane` → `[PERSON_1]`); name-like types only, structured PII merges on exact value. |
+| `redact_numbered` | `False` | Emit `[TYPE_N]` (not bare `[TYPE]`) for the `redact` strategy so coreference stays visible; still irreversible. Document redaction turns this on. |
 | `enabled_types` | `None` | If set, only mask these categories. `None` = all. |
 | `disabled_types` | `set()` | Categories to never mask. |
 | `min_score` | `0.5` | Drop detections below this confidence. |

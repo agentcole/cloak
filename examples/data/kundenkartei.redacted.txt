@@ -1,54 +1,54 @@
 ## Kundenkartei - Musterdaten
 
-Hinweis: Sämtliche Namen, [ADDRESS], Telefonnummern, E-Mail-Adressen und sonstigen Angaben sind frei erfunden. Jede Ähnlichkeit mit real existierenden Personen ist rein zufällig. Dieses Dokument dient ausschließlich zu Test- und Demonstrationszwecken (Anonymisierung, Formularverarbeitung, Datenmigration).
+Hinweis: Sämtliche Namen, [ADDRESS_1], Telefonnummern, E-Mail-Adressen und sonstigen Angaben sind frei erfunden. Jede Ähnlichkeit mit real existierenden Personen ist rein zufällig. Dieses Dokument dient ausschließlich zu Test- und Demonstrationszwecken (Anonymisierung, Formularverarbeitung, Datenmigration).
 
-Die folgende [ORGANIZATION] enthält Beispieldatensätze für die interne Qualitätssicherung. Sie wurde am [DATE] generiert und umfasst [PERSON] mit vollständigen Stammdaten. Bitte verarbeiten Sie die Daten ausschließlich in der [LOCATION].
+Die folgende [ORGANIZATION_1] enthält Beispieldatensätze für die interne Qualitätssicherung. Sie wurde am [DATE_1] generiert und umfasst [PERSON_1] mit vollständigen Stammdaten. Bitte verarbeiten Sie die Daten ausschließlich in der [LOCATION_1].
 
-## 1. [PERSON]
+## 1. [PERSON_2]
 
-| Anschrift          | [ADDRESS]   |
-|--------------------|-------------|
-| Telefon (Festnetz) | [PHONE]     |
-| Telefon (Mobil)    | [PHONE]     |
-| E-Mail             | [EMAIL]     |
-| Geburtsdatum       | [DATE]      |
-| Kundennummer       | KD-100234   |
-| IBAN (Test)        | [IBAN]      |
+| Anschrift          | [ADDRESS_2]   |
+|--------------------|---------------|
+| Telefon (Festnetz) | [PHONE_1]     |
+| Telefon (Mobil)    | [PHONE_2]     |
+| E-Mail             | [EMAIL_1]     |
+| Geburtsdatum       | [DATE_2]      |
+| Kundennummer       | KD-100234     |
+| IBAN (Test)        | [IBAN_1]      |
 
-## 2. [PERSON]
+## 2. [PERSON_3]
 
-| Anschrift          | [ADDRESS]   |
-|--------------------|-------------|
-| Telefon (Festnetz) | [PHONE]     |
-| Telefon (Mobil)    | [PHONE]     |
-| E-Mail             | [EMAIL]     |
-| Geburtsdatum       | [DATE]      |
-| Kundennummer       | KD-100235   |
-| IBAN (Test)        | [IBAN]      |
+| Anschrift          | [ADDRESS_3]   |
+|--------------------|---------------|
+| Telefon (Festnetz) | [PHONE_3]     |
+| Telefon (Mobil)    | [PHONE_4]     |
+| E-Mail             | [EMAIL_2]     |
+| Geburtsdatum       | [DATE_3]      |
+| Kundennummer       | KD-100235     |
+| IBAN (Test)        | [IBAN_2]      |
 
-## 3. [PERSON]
+## 3. [PERSON_4]
 
-| Anschrift          | [ADDRESS]   |
-|--------------------|-------------|
-| Telefon (Festnetz) | [PHONE]     |
-| Telefon (Mobil)    | [PHONE]     |
-| E-Mail             | [EMAIL]     |
-| Geburtsdatum       | [DATE]      |
-| Kundennummer       | KD-100236   |
-| IBAN (Test)        | [IBAN]      |
+| Anschrift          | [ADDRESS_4]   |
+|--------------------|---------------|
+| Telefon (Festnetz) | [PHONE_5]     |
+| Telefon (Mobil)    | [PHONE_6]     |
+| E-Mail             | [EMAIL_3]     |
+| Geburtsdatum       | [DATE_4]      |
+| Kundennummer       | KD-100236     |
+| IBAN (Test)        | [IBAN_3]      |
 
-## 4. [PERSON]
+## 4. [PERSON_5]
 
-| Anschrift          | [ADDRESS]                   |
+| Anschrift          | [ADDRESS_5]                 |
 |--------------------|-----------------------------|
-| Telefon (Festnetz) | [PHONE]                     |
-| Telefon (Mobil)    | [PHONE]                     |
-| E-Mail             | [EMAIL]                     |
-| Geburtsdatum       | [DATE]                      |
+| Telefon (Festnetz) | [PHONE_7]                   |
+| Telefon (Mobil)    | [PHONE_8]                   |
+| E-Mail             | [EMAIL_4]                   |
+| Geburtsdatum       | [DATE_5]                    |
 | Kundennummer       | KD-100237                   |
 | IBAN (Test)        | DE21 3007 0010 0123 4567 89 |
 
-## 5. [PERSON]
+## 5. [PERSON_6]
 
 Anschrift
 
@@ -64,18 +64,18 @@ Kundennummer
 
 IBAN (Test)
 
-## 6. [PERSON]
+## 6. [PERSON_7]
 
-| Anschrift          | [ADDRESS]                   |
+| Anschrift          | [ADDRESS_6]                 |
 |--------------------|-----------------------------|
-| Telefon (Festnetz) | [PHONE]                     |
-| Telefon (Mobil)    | [PHONE]                     |
-| E-Mail             | [EMAIL]                     |
-| Geburtsdatum       | [DATE]                      |
+| Telefon (Festnetz) | [PHONE_9]                   |
+| Telefon (Mobil)    | [PHONE_10]                  |
+| E-Mail             | [EMAIL_5]                   |
+| Geburtsdatum       | [DATE_6]                    |
 | Kundennummer       | KD-100239                   |
 | IBAN (Test)        | DE78 8607 0024 0123 4567 00 |
 
-## 7. [PERSON]
+## 7. [PERSON_8]
 
 Anschrift
 
@@ -91,7 +91,7 @@ Kundennummer
 
 IBAN (Test)
 
-## 8. [PERSON]
+## 8. [PERSON_9]
 
 Anschrift
 
@@ -107,7 +107,7 @@ Kundennummer
 
 IBAN (Test)
 
-## 9. [PERSON]
+## 9. [PERSON_10]
 
 Anschrift
 
@@ -123,73 +123,73 @@ Kundennummer
 
 IBAN (Test)
 
-[ADDRESS]
+[ADDRESS_7]
 
-[PHONE]
+[PHONE_11]
 
-[PHONE]
+[PHONE_12]
 
-[EMAIL]
+[EMAIL_6]
 
-[DATE]
+[DATE_7]
 
 KD-100238
 
 DE36 2004 1133 0473 0420 00
 
-[ADDRESS]
+[ADDRESS_8]
 
-[PHONE]
+[PHONE_13]
 
-[PHONE]
+[PHONE_14]
 
-[EMAIL]
+[EMAIL_7]
 
-[DATE]
+[DATE_8]
 
 KD-100240
 
 DE05 5005 0201 0000 0021 23
 
-[ADDRESS]
+[ADDRESS_9]
 
-[PHONE]
+[PHONE_15]
 
-[PHONE]
+[PHONE_16]
 
-[EMAIL]
+[EMAIL_8]
 
-[DATE]
+[DATE_9]
 
 KD-100241
 
 DE17 8505 0300 0001 2345 67
 
-[ADDRESS]
+[ADDRESS_10]
 
-[PHONE]
+[PHONE_17]
 
-[PHONE]
+[PHONE_18]
 
-[EMAIL]
+[EMAIL_9]
 
-[DATE]
+[DATE_10]
 
 KD-100242
 
 DE63 7605 0101 0001 2345 67
 
-## 10. [PERSON]
+## 10. [PERSON_11]
 
-| Anschrift          | [ADDRESS]                   |
+| Anschrift          | [ADDRESS_11]                |
 |--------------------|-----------------------------|
-| Telefon (Festnetz) | [PHONE]                     |
-| Telefon (Mobil)    | [PHONE]                     |
-| E-Mail             | [EMAIL]                     |
-| Geburtsdatum       | [DATE]                      |
+| Telefon (Festnetz) | [PHONE_19]                  |
+| Telefon (Mobil)    | [PHONE_20]                  |
+| E-Mail             | [EMAIL_10]                  |
+| Geburtsdatum       | [DATE_11]                   |
 | Kundennummer       | KD-100243                   |
 | IBAN (Test)        | DE49 5505 0120 0200 3456 78 |
 
-Zusammenfassung: Die Kartei umfasst 10 fiktive Datensätze mit jeweils [PERSON], [ADDRESS], zwei Telefonnummern, E-Mail-Adresse, [DATE], Kundennummer und einer Test-IBAN. Alle Werte sind synthetisch und dürfen nicht in Produktivsystemen verwendet werden.
+Zusammenfassung: Die Kartei umfasst 10 fiktive Datensätze mit jeweils [PERSON_12], [ADDRESS_12], zwei Telefonnummern, E-Mail-Adresse, [DATE_12], Kundennummer und einer Test-IBAN. Alle Werte sind synthetisch und dürfen nicht in Produktivsystemen verwendet werden.
 
-Erstellt am [DATE] - Version 1.0 - Vertraulich (Testdaten)
+Erstellt am [DATE_1] - Version 1.0 - Vertraulich (Testdaten)

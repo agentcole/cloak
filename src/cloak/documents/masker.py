@@ -44,18 +44,25 @@ def mask_document(doc: SegmentedDoc, cloak: Cloak, *, mode: str = MODE_MASK) -> 
         raise ValueError(f"mode must be {MODE_MASK!r} or {MODE_REDACT!r}, got {mode!r}")
 
     engine = cloak if mode == MODE_MASK else _redact_engine(cloak)
-    vault = Vault(salt=engine._salt())
+
+    # One detection pass over every segment (NER runs once), then a document-wide
+    # coreference map so a person/place named several ways shares one token
+    # across all pages. The shared vault then numbers each distinct entity.
+    seg_entities = [engine.scan(seg.text) for seg in doc.segments]
+    coref = engine._build_coref([e for ents in seg_entities for e in ents])
+    vault = Vault(salt=engine._salt(), coref=coref)
 
     masked: list[Segment] = []
     entities: list[DocEntity] = []
-    for seg in doc.segments:
-        res = engine.mask_text(seg.text, vault)  # shared vault -> coreference
-        new_seg = replace(seg, text=res.text)
+    for seg, ents in zip(doc.segments, seg_entities, strict=True):
+        vault.reserve(seg.text)
+        text = engine._replace(seg.text, ents, vault)  # shared vault -> coreference
+        new_seg = replace(seg, text=text)
         # Write masked text back into the backing docling node (if any) so
         # structure-faithful exporters reflect the masked content.
-        _writeback(seg.node, res.text)
+        _writeback(seg.node, text)
         masked.append(new_seg)
-        for ent in res.entities:
+        for ent in ents:
             entities.append(
                 DocEntity(
                     entity=ent, order=seg.order, page=seg.page, bbox=seg.bbox, kind=seg.kind
@@ -69,8 +76,14 @@ def mask_document(doc: SegmentedDoc, cloak: Cloak, *, mode: str = MODE_MASK) -> 
 
 
 def _redact_engine(cloak: Cloak) -> Cloak:
-    """A sibling engine that forces the one-way redact strategy."""
-    policy = replace(cloak.policy, strategy=STRATEGY_REDACT, strategy_by_type={})
+    """A sibling engine that forces the one-way, numbered redact strategy.
+
+    Numbering (``[PERSON_1]``) keeps coreference visible in the irreversible
+    artifact; nothing reversible is stored.
+    """
+    policy = replace(
+        cloak.policy, strategy=STRATEGY_REDACT, strategy_by_type={}, redact_numbered=True
+    )
     return Cloak(policy)
 
 

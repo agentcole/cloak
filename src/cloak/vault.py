@@ -15,6 +15,8 @@ import json
 import logging
 import os
 import re
+from collections.abc import Callable
+from dataclasses import replace
 from typing import TYPE_CHECKING, Any
 
 from .types import VaultEntry
@@ -39,8 +41,16 @@ def _suffix(token: str, n: int) -> str:
 
 
 class Vault:
-    def __init__(self, salt: str | None = None) -> None:
+    def __init__(
+        self,
+        salt: str | None = None,
+        coref: Callable[[str, str], str] | None = None,
+    ) -> None:
         self.salt = salt or _random_salt()
+        # Optional coreference map: (type, surface) -> canonical surface. Variant
+        # mentions that map to the same canonical share one token (and restore to
+        # that canonical form). ``None`` keeps exact-value coreference.
+        self._coref = coref
         self._token_by_key: dict[tuple[str, str], str] = {}
         self._original_by_token: dict[str, str] = {}
         self._counter: dict[str, int] = {}
@@ -68,11 +78,18 @@ class Vault:
     def allocate(self, entity: Any, strategy: Strategy) -> str:
         """Return the token for ``entity``, creating one if needed.
 
-        Coreference: a repeat of the same (type, text) returns the existing
-        token. Token collisions — with a different original, or with a literal
-        already present in the input — are broken by re-salting, then a suffix.
+        Coreference: a repeat of the same (type, text) — or, when a coref map is
+        set, a variant mention that canonicalizes to the same entity — returns
+        the existing token. Token collisions (a different original, or a literal
+        already present in the input) are broken by re-salting, then a suffix.
         """
-        key = (entity.type, entity.text)
+        original = entity.text
+        if self._coref is not None:
+            original = self._coref(entity.type, entity.text)
+            if original != entity.text:
+                entity = replace(entity, text=original)
+
+        key = (entity.type, original)
         existing = self._token_by_key.get(key)
         if existing is not None:
             return existing

@@ -63,6 +63,17 @@ class CloakPolicy:
     strategy: str = STRATEGY_PLACEHOLDER
     strategy_by_type: dict[str, str] = field(default_factory=dict)
 
+    # Coreference: group variant mentions of one entity ("Jane Doe", "Jane",
+    # "Ms. Doe") so they share a numbered token. Conservative and scoped to
+    # name-like types; structured PII (email, IBAN, ...) always links by exact
+    # value. See cloak.coref.
+    coref: bool = True
+    # Redaction numbering: emit ``[PERSON_1]`` instead of a bare ``[PERSON]`` so
+    # one-way redacted output still shows which mentions corefer. Irreversible
+    # either way. Off for the standalone redact strategy; document redaction
+    # turns it on.
+    redact_numbered: bool = False
+
     enabled_types: set[str] | None = None
     disabled_types: set[str] = field(default_factory=set)
     min_score: float = 0.5

@@ -126,10 +126,16 @@ class Cloak:
         return text
 
     def mask_text(self, text: str, vault: Vault | None = None) -> CloakResult:
-        """Mask a single string, returning the masked text and its vault."""
-        vault = vault if vault is not None else Vault(salt=self._salt())
-        vault.reserve(text)  # don't reuse a token literal already in the input
+        """Mask a single string, returning the masked text and its vault.
+
+        When this call owns the vault, coreference is scoped to this string. A
+        caller that passes a shared vault (messages, documents) is responsible
+        for configuring its coref map so grouping spans the whole input.
+        """
         entities = self.scan(text)
+        if vault is None:
+            vault = Vault(salt=self._salt(), coref=self._build_coref(entities))
+        vault.reserve(text)  # don't reuse a token literal already in the input
         masked = self._replace(text, entities, vault)
         return CloakResult(
             text=masked,
@@ -137,6 +143,14 @@ class Cloak:
             entities=entities,
             stats={"entities": len(entities), "by_type": _count(entities)},
         )
+
+    def _build_coref(self, entities: list[Entity]) -> Any:
+        """A coref canonicalizer over ``entities``, or ``None`` if disabled."""
+        if not self.policy.coref:
+            return None
+        from .coref import CorefIndex
+
+        return CorefIndex.build((e.type, e.text) for e in entities).canonical
 
     def unmask_text(self, text: str, vault: Vault) -> str:
         """Restore originals in ``text`` using ``vault`` (the response path)."""
